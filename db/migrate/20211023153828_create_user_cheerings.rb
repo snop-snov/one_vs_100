@@ -1,6 +1,6 @@
-class CreateCheerings < ActiveRecord::Migration[6.1]
+class CreateUserCheerings < ActiveRecord::Migration[6.1]
   def change
-    create_table :cheerings do |t|
+    create_table :user_cheerings do |t|
       t.text :text
       t.string :employee_role
       t.references :user

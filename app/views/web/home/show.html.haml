@@ -4,7 +4,10 @@
     %br/
     %h1.header.center
       1 vs 100
-    %h5.center
-      Привет. Представь, что ты программист и ленишься.
-      %br/
-      Как тебя замотивировать работать? Что тебе сказать?
+    - @cheerings.each do |cheering|
+      %h5.center
+        = render partial: "web/home/cheerings/#{cheering.employee_role}", locals: { cheering: cheering }
+    - if @new_cheering.present?
+      %h5.center
+        = render partial: "web/home/roles/#{@new_cheering.employee_role}"
+        = render partial: 'form', locals: { user_cheering: @new_cheering, url: user_cheerings_path(@user) }
