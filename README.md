@@ -18,9 +18,13 @@
 
 # Deploy
 ## setup
+```
 heroku login
 heroku git:remote -a one-vs-100
 heroku stack:set container
+```
 
 ## deploy
-git push -f heroku main
+```
+git push
+```
