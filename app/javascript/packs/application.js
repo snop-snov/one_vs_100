@@ -3,6 +3,11 @@
 // a relevant structure within app/javascript and only use these pack files to reference
 // that code so it'll be compiled.
 
+import './sass/materialize-css-custom';
+import './sass/_custom-sass';
+
+import M from 'materialize-css/dist/js/materialize'
+
 import Rails from "@rails/ujs"
 import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
