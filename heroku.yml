@@ -9,9 +9,9 @@ build:
     DATABASE_NAME: one_vs_100_development
     DATABASE_USERNAME: one_vs_100
     DATABASE_PASSWORD: one_vs_100
-# release:
-#   # command:
-#   #   - ./deployment-tasks.sh
-#   image: web
+release:
+  command:
+    - ./deployment-tasks.sh
+  image: web
 run:
   web: bash -c "./bin/rails s -b '0.0.0.0' -p 3000"

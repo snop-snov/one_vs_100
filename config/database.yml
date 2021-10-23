@@ -1,7 +1,8 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  url: <%= ENV['DATABASE_URL'] %>
+  host: <%= ENV['DATABASE_HOST'] || 'postgres' %>
+  port: <%= ENV['DATABASE_PORT'] || 5432 %>
   pool: <%= ENV['DATABASE_POOL'] || 5 %>
   database: <%= ENV['DATABASE_NAME'] %>
   username: <%= ENV['DATABASE_USERNAME'] %>
@@ -16,3 +17,4 @@ test:
 
 production:
   <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
