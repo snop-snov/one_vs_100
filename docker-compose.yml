@@ -1,0 +1,44 @@
+version: '3.5'
+services:
+  web:
+    build:
+      context: .
+    ports:
+      - 3000:3000
+    volumes: &volumes
+      - .:/app:cached
+      - ~/.bash_history:/root/.bash_history
+      - bundle_cache:/usr/local/bundle
+    command: bin/rails s
+    depends_on:
+      - redis
+      - postgres
+      #- sidekiq
+    env_file: envvars
+    environment: &environment
+      RAILS_LOG_TO_STDOUT: 'true'
+      RAILS_ENV: development
+
+  redis:
+    image: redis:4.0
+
+  postgres:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: one_vs_100_test
+      POSTGRES_USER: one_vs_100
+      POSTGRES_PASSWORD: one_vs_100
+
+  # sidekiq:
+  #   image: one_vs_100_web
+  #   depends_on:
+  #     - redis
+  #     - postgres
+  #   volumes: *volumes
+  #   env_file: envvars
+  #   environment:
+  #     <<: *environment
+  #   command: sidekiq
+
+volumes:
+  bundle_cache:
