@@ -4,4 +4,5 @@ class User::Cheering < ApplicationRecord
   belongs_to :user, dependent: :destroy
 
   validates :employee_role, presence: true, inclusion: { in: EMPLOYEE_ROLES }
+  validates :text, presence: true
 end

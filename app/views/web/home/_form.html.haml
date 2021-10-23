@@ -4,5 +4,5 @@
       = user_cheering.errors.full_messages.join(' ,')
 
   = form.hidden_field :employee_role, value: user_cheering.employee_role
-  = form.text_area :text, placeholder: "Твой подбадривающий текст", class: "materialize-textarea"
+  = form.text_area :text, required: true, placeholder: "Твой подбадривающий текст", class: "materialize-textarea"
   = form.submit class: "btn waves-effect waves-light"
