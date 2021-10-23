@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   scope module: :web do
-    resources :sessions, only: %i[destroy]
+    resource :session, only: %i[destroy]
     resources :users, only: %i[] do
       scope module: :users do
         resources :cheerings, only: %i[create]

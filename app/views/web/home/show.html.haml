@@ -7,7 +7,13 @@
     - @cheerings.each do |cheering|
       %h5.center
         = render partial: "web/home/cheerings/#{cheering.employee_role}", locals: { cheering: cheering }
+        %br/
+        %br/
+
     - if @new_cheering.present?
       %h5.center
         = render partial: "web/home/roles/#{@new_cheering.employee_role}"
         = render partial: 'form', locals: { user_cheering: @new_cheering, url: user_cheerings_path(@user) }
+    - else
+      %h5.center
+        = button_to "Начать сначала", session_path, method: :delete, class: "btn waves-effect waves-light"
