@@ -17,9 +17,12 @@ const borderMax = (x, max) => x <= max ? x : max
 const borderMin = (x, min) => x >= min ? x : min
 const between = (x, min, max) => borderMin(borderMax(x, max), min)
 
-window.onload = function() {
+const handleOnLoad = function() {
 	let app = new PIXI.Application({ width: APP_WIDTH, height: APP_HEIGHT });
-	document.body.appendChild(app.view);
+	const element = document.getElementById("gameContainer");
+	if (!element) return;
+
+	element.appendChild(app.view);
 	// let sprite = PIXI.Sprite.from('/assets/snake-item.png');
 	// app.stage.addChild(sprite);
 
@@ -35,11 +38,7 @@ window.onload = function() {
 		// console.log(delta)
 		elapsed += delta;
 		employees.forEach((e) => {
-			const maxX = APP_WIDTH / 2 - EMPLOYEE_D
-			const maxY = APP_HEIGHT / 2 - EMPLOYEE_D
-
-			e.obj.x = between(e.startPosition.x + Math.sin(elapsed/e.magicNumbers.x) * maxX, 0, APP_WIDTH - EMPLOYEE_D);
-			e.obj.y = between(e.startPosition.y + Math.cos(elapsed/e.magicNumbers.y) * maxY, 0, APP_HEIGHT - EMPLOYEE_D);
+			moveEmployee(e)
 		})
 	});
 
@@ -56,12 +55,12 @@ window.onload = function() {
 		return obj;
 	}
 
-	function moveEmployee(employee, elapsed) {
-		const magicX = between(random(100), 50, 80)
-		const magicY = between(random(100), 50, 80)
+	function moveEmployee(e) {
+		const maxX = APP_WIDTH / 2 - EMPLOYEE_D
+		const maxY = APP_HEIGHT / 2 - EMPLOYEE_D
 
-		employee.position.x = magicX + Math.sin(elapsed/50.0) * magicX;
-		employee.position.y = magicY + Math.cos(elapsed/80.0) * magicY;
+		e.obj.x = between(e.startPosition.x + Math.sin(elapsed/e.magicNumbers.x) * maxX, 0, APP_WIDTH - EMPLOYEE_D);
+		e.obj.y = between(e.startPosition.y + Math.cos(elapsed/e.magicNumbers.y) * maxY, 0, APP_HEIGHT - EMPLOYEE_D);
 	}
 
 	function drawEmployees(app) {
@@ -117,3 +116,5 @@ window.onload = function() {
 		}
 	}
 }
+
+document.addEventListener("turbolinks:load", handleOnLoad);
