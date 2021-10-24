@@ -18,6 +18,18 @@ services:
     environment: &environment
       RAILS_LOG_TO_STDOUT: 'true'
       RAILS_ENV: development
+      WEBPACKER_DEV_SERVER_HOST: 'frontend'
+
+  frontend:
+    image: one_vs_100_web
+    volumes: *volumes
+    command: bin/webpack-dev-server
+    ports:
+      - 3035:3035
+    env_file: envvars
+    environment:
+      <<: *environment
+      WEBPACK_DEFAULT_LISTEN_HOST_ADDR: '0.0.0.0'
 
   redis:
     image: redis:4.0
