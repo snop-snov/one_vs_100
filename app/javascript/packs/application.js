@@ -5,6 +5,7 @@
 
 import './sass/materialize-css-custom';
 import './sass/_custom-sass';
+import './game';
 
 import M from 'materialize-css/dist/js/materialize'
 
