@@ -10,6 +10,8 @@ const APP_BORDER = 45
 const CHEERING_R = 40
 const CHEERING_TIME = 2 * 1000 // 2 seconds
 
+const RUNNING_TIME = 2 * 1000 // 2 seconds
+
 const EMPLOYEE_R = APP_WIDTH / 70
 const EMPLOYEE_D = 2 * EMPLOYEE_R
 
@@ -63,12 +65,13 @@ const startGame = function(app, userCheerings) {
 
 	app.ticker.add((delta) => {
 		elapsed += delta;
-		employees.forEach((e) => e.cheered ? moveCheeredEmployee(e) : moveEmployee(e))
+		// employees.forEach((e) => e.cheered ? moveCheeredEmployee(e) : moveEmployee(e))
+		employees.forEach((e) => e.cheered ? moveCheeredEmployee(e) : null)
 	});
 
 	function drawPlayer(app) {
 		const w = APP_WIDTH / 40;
-		const h = APP_HEIGHT / 40;
+		const h = APP_WIDTH / 40;
 		const x = 0;
 		const y = 0;
 
@@ -177,20 +180,51 @@ const startGame = function(app, userCheerings) {
 	function moveOnKeyPress(box, employees, key) {
 		if (key.keyCode === 65 || key.keyCode === 37) {  // A (65) / Left (37)
 			if (box.position.x != APP_BORDER) box.position.x -= box.width;
+			runFromPlayer(employees, box)
 		}
 		if (key.keyCode === 87 || key.keyCode === 38) {  // W (87) / Up (38)
 			if (box.position.y != APP_BORDER_TOP) box.position.y -= box.height;
+			runFromPlayer(employees, box)
 		}
 		if (key.keyCode === 68 || key.keyCode === 39) {  // D (68) / Right (39)
 			if (box.position.x != APP_WIDTH - APP_BORDER - box.width) box.position.x += box.width;
+			runFromPlayer(employees, box)
 		}
 		if (key.keyCode === 83 || key.keyCode === 40) {  // S (83) / Down (40)
 			if (box.position.y != APP_HEIGHT - APP_BORDER - box.height) box.position.y += box.height;
+			runFromPlayer(employees, box)
 		}
 
 		if (key.keyCode === 49) handleCheering(box, employees, 1) // 1 (49)
 		if (key.keyCode === 50) handleCheering(box, employees, 2) // 2 (50)
 		if (key.keyCode === 51) handleCheering(box, employees, 3) // 3 (51)
+	}
+
+	function runFromPlayer(employees, player) {
+		const aroundEmployees = employees.filter((e) => isAroundPlayer(player, e))
+		aroundEmployees.forEach((e) => moveFromPlayer(e, player))
+	}
+
+	function moveFromPlayer(employee, player) {
+		const obj = employee.obj
+		const directionX = obj.x < player.x ? -1 : 1
+		const directionY = obj.y < player.y ? -1 : 1
+
+		const stepX = random(1, 3)
+		const stepY = random(1, 3)
+
+		const move = () => {
+			obj.position.x = (obj.x + stepX) * directionX
+			obj.position.y = (obj.y + stepY) * directionY
+		}
+
+		const interval = setInterval(() => {
+			move()
+		}, 300)
+
+		setTimeout(() => {
+			clearInterval(interval)
+		}, RUNNING_TIME)
 	}
 
 	function handleCheering(player, employees, cheering) {
