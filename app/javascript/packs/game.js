@@ -32,6 +32,8 @@ const borderMax = (x, max) => x <= max ? x : max
 const borderMin = (x, min) => x >= min ? x : min
 const between = (x, min, max) => borderMin(borderMax(x, max), min)
 
+const colorFilter = new ColorOverlayFilter(0x000020, 0.6)
+
 const handleOnLoad = function() {
 	let app = new PIXI.Application({ width: APP_WIDTH, height: APP_HEIGHT });
 
@@ -94,8 +96,8 @@ const startGame = function(app, userCheerings) {
 		const x = e.endPosition.x
 		const y = e.endPosition.y
 
-		e.obj.x = x
-		e.obj.y = y
+		e.obj.x = moveToPoint(e.obj.x, x, 1)
+		e.obj.y = moveToPoint(e.obj.y, y, 1)
 	}
 
 	function drawEmployees(app) {
@@ -125,8 +127,9 @@ const startGame = function(app, userCheerings) {
 		obj.beginFill(role.color);
 		obj.position.x = random(APP_BORDER, APP_WIDTH - EMPLOYEE_D - APP_BORDER)
 		obj.position.y = random(APP_BORDER_TOP, APP_HEIGHT - EMPLOYEE_D - APP_BORDER)
-
 		obj.drawCircle(r, r, r);
+		obj.endFill();
+
 		app.stage.addChild(obj);
 
 		const x = random(100, 450)
@@ -208,7 +211,7 @@ const startGame = function(app, userCheerings) {
 	}
 
 	function cheerEmployee(employee) {
-		employee.obj.filters = [colorFilter()]
+		employee.obj.filters = [colorFilter]
 		employee.cheered = true
 	}
 
@@ -266,10 +269,11 @@ const startGame = function(app, userCheerings) {
 		return {x, y}
 	}
 
-	function colorFilter() {
-		const filter = new ColorOverlayFilter(0x000020, 0.6);
+	function moveToPoint(x, end, speed) {
+		if (Math.abs(x - end) < 2) return end
 
-		return filter
+		const direction = (x - end) > 0 ? -1 : 1
+		return x + (speed * direction)
 	}
 }
 
