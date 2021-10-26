@@ -1,8 +1,18 @@
 class User::Cheering < ApplicationRecord
-  EMPLOYEE_ROLES = %w[developer devops sales]
+  EMPLOYEE_ROLES = [
+    {type: 'developer', color: '#fdd835'},
+    {type: 'devops', color: 'green'},
+    {type: 'sales', color: '#2196F3'}
+  ]
+
+  class << self
+    def employee_role_types
+      EMPLOYEE_ROLES.map { |r| r[:type] }
+    end
+  end
 
   belongs_to :user, dependent: :destroy
 
-  validates :employee_role, presence: true, inclusion: { in: EMPLOYEE_ROLES }
+  validates :employee_role, presence: true, inclusion: { in: self.employee_role_types }
   validates :text, presence: true
 end

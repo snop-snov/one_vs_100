@@ -1,9 +1,32 @@
+:css
+  .row {
+    display: flex;
+  }
+  .column {
+    flex: 50%;
+  }
+
 #index-banner.section.no-pad-bot
   .container
-    %h6{style: 'color: #fdd835'}
-      1 - Желтый
-    %h6{style: 'color: green'}
-      2 - Зелёный
-    %h6{style: 'color: #2196F3'}
-      3 - Синий
-    %div#gameContainer
+    .row
+      .column
+        #gameContainer
+      .column
+        .container
+          - User::Cheering::EMPLOYEE_ROLES.each do |role|
+            - cheering = current_user.cheerings.find_by(employee_role: role[:type])
+            - text = cheering.present? ? cheering.text : role[:type]
+
+            = render partial: "web/games/cheerings/#{role[:type]}", locals: { color: role[:color], text: text }
+
+        .container
+          #voiceContainer
+            %button
+              Start new test
+            %div
+              %p.phrase
+                Phrase...
+              %p.result
+                Right or wrong?
+              %p.output
+                "...diagnostic messages"

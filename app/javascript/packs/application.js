@@ -6,6 +6,7 @@
 import './sass/materialize-css-custom';
 import './sass/_custom-sass';
 import './game';
+import './voice';
 
 import M from 'materialize-css/dist/js/materialize'
 
