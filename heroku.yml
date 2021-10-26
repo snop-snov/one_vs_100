@@ -14,4 +14,4 @@ release:
     - ./deployment-tasks.sh
   image: web
 run:
-  web: rake assets:precompile && bundle exec puma -C config/puma.rb
+  web: puma -C config/puma.rb
