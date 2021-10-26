@@ -241,7 +241,7 @@ const startGame = function(app, userCheerings) {
 
 	function cheeringTextByRole(roleType) {
 		const c = userCheerings.find((c) => c.employeeRole === roleType)
-		return c.text
+		return c ? c.text : roleType
 	}
 
 	function employeePositionByIndex(i) {
