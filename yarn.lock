@@ -956,6 +956,11 @@
   resolved "https://registry.yarnpkg.com/@pixi/filter-color-matrix/-/filter-color-matrix-6.1.3.tgz#a04f105adfaf9628f4122fcd01a5af295bd98cab"
   integrity sha512-d1pyxmVrGDOrO5pINe+fTspj1NNxiIp2IZ+FGgT7e17xnxjXTvtk4n4KqXAZFS1NCoStImDAV5j+b8Lysdg5jQ==
 
+"@pixi/filter-color-overlay@^4.1.5":
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/@pixi/filter-color-overlay/-/filter-color-overlay-4.1.5.tgz#db9bc841228c41f469267d09e566006496dfe3f1"
+  integrity sha512-hT29sEBkcEzRdNFKlzHvzOJ0nJh2XKuuyiQkgr9IwA6x6GZ5UCX5ybJl7cfr/NKpujvxGIXknQNdPU7MWonJOQ==
+
 "@pixi/filter-displacement@6.1.3":
   version "6.1.3"
   resolved "https://registry.yarnpkg.com/@pixi/filter-displacement/-/filter-displacement-6.1.3.tgz#a806f598298852d5165e7a1a20f0b8b0cc41a121"
@@ -3519,6 +3524,11 @@ https-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
   integrity sha1-7AbBDgo0wPL68Zn3/X/Hj//QPHM=
+
+humps@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/humps/-/humps-2.0.1.tgz#dd02ea6081bd0568dc5d073184463957ba9ef9aa"
+  integrity sha1-3QLqYIG9BWjcXQcxhEY5V7qe+ao=
 
 iconv-lite@0.4.24:
   version "0.4.24"

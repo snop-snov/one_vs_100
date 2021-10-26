@@ -2,14 +2,19 @@ Rails.application.routes.draw do
   scope module: :web do
     resource :session, only: %i[destroy]
     resource :game, only: %i[show]
-    resources :users, only: %i[] do
+    resource :user, only: %i[] do
       scope module: :users do
         resources :cheerings, only: %i[create]
       end
     end
   end
 
-  scope module: :api do
+  namespace :api do
+    resource :user, only: %i[] do
+      scope module: :users do
+        resources :cheerings, only: %i[index]
+      end
+    end
   end
 
   root to: 'web/home#show'
