@@ -90,8 +90,6 @@ ARG RAILS_ENV=production
 RUN bundle
 RUN yarn install --check-files
 
-RUN RAILS_ENV=production rake assets:precompile
-
 EXPOSE 3000
 
-CMD ./bin/rails s -b '0.0.0.0' -p 3000
+ENTRYPOINT ["./docker-entrypoint.sh"]
