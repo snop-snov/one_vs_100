@@ -88,7 +88,9 @@ ADD . /app
 ARG RAILS_ENV=production
 
 RUN bundle
-RUN yarn
+RUN yarn install --check-files
+
+RUN RAILS_ENV=production rake assets:precompile
 
 EXPOSE 3000
 
