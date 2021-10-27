@@ -10,6 +10,15 @@
   .container
     .row
       .column
+        %h3.header.center
+          1 vs 100
+      .column
+        %h3.header.center
+          #gameTimer
+            60.0
+  .container
+    .row
+      .column
         #gameContainer
       .column
         .container
@@ -18,6 +27,9 @@
             - text = cheering.present? ? cheering.text : role[:type]
 
             = render partial: "web/games/cheerings/#{role[:type]}", locals: { color: role[:color], text: text }
+          .container
+            %br
+            = button_to "Обновить тексты", session_path, method: :delete, class: "btn waves-effect waves-light"
         %br
         %br
         .container

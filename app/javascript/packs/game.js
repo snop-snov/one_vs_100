@@ -4,7 +4,7 @@ import { ColorOverlayFilter } from '@pixi/filter-color-overlay';
 
 const APP_WIDTH = 600
 const APP_HEIGHT = 600
-const APP_BORDER_TOP = 75
+const APP_BORDER_TOP = 45
 const APP_BORDER = 45
 
 const CHEERING_R = 40
