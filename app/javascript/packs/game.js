@@ -13,7 +13,9 @@ const CHEERING_TIME = 2 * 1000 // 2 seconds
 const EMPLOYEE_R = APP_WIDTH / 70
 const EMPLOYEE_D = 2 * EMPLOYEE_R
 
-const EMPLOYEES_COUNT = 100
+const GAME_TIME = 60 // seconds
+
+const EMPLOYEES_COUNT = 3
 const EMPLOYEE_ROLES = [
 	{'type': 'developer', 'color': 0xffeb3b}, // yellow
 	{'type': 'devops', 'color': 0x24c875}, // green
@@ -59,12 +61,41 @@ const startGame = function(app, userCheerings) {
 	let cheeringText = drawCheeringText(app)
 	let cheeringTimeout
 
+	let lazyEmployeesCount = EMPLOYEES_COUNT
+
 	document.addEventListener('keydown', (k) => moveOnKeyPress(player, employees, k));
+
+	const timerContainer = document.getElementById("gameTimer")
+	const scoreContainer = document.getElementById("gameScoreCounter")
+	renderScore()
+
+	let timeleft = GAME_TIME;
+	if (timerContainer) startTimer()
+	if (timeleft <= 0 || lazyEmployeesCount <= 0) showGameResult(app)
 
 	app.ticker.add((delta) => {
 		elapsed += delta;
-		employees.forEach((e) => e.cheered ? moveCheeredEmployee(e) : moveEmployee(e))
+
+		if (isGameInProgress()) { employees.filter((e) => e.state === 'lazy').forEach(moveEmployee) }
+		employees.filter((e) => e.state === 'cheered').forEach(moveCheeredEmployee)
 	});
+
+	function showGameResult(app) {
+		// console.log("FINISHED")
+	}
+
+	function renderScore() {
+		scoreContainer.innerHTML = '1 vs ' + lazyEmployeesCount
+	}
+
+	function startTimer() {
+		const gameTimer = setInterval(() => {
+			if (isGameEnded()) clearInterval(gameTimer);
+
+			timerContainer.innerHTML = Math.round(timeleft);
+			timeleft -= 1;
+		}, 1000);
+	}
 
 	function drawPlayer(app) {
 		const w = APP_WIDTH / 40;
@@ -98,6 +129,8 @@ const startGame = function(app, userCheerings) {
 
 		e.obj.x = moveToPoint(e.obj.x, x, 1)
 		e.obj.y = moveToPoint(e.obj.y, y, 1)
+
+		if (e.obj.x == x && e.obj.y == y) e.state = 'cheered'
 	}
 
 	function drawEmployees(app) {
@@ -138,7 +171,7 @@ const startGame = function(app, userCheerings) {
 		const employee = {
 			startPosition: {x: obj.position.x, y: obj.position.y},
 			endPosition: employeePositionByIndex(i),
-			cheered: false,
+			state: 'lazy',
 			magicNumbers: {x: x, y: y},
 			obj,
 			cheeringText: cheering.text,
@@ -175,22 +208,24 @@ const startGame = function(app, userCheerings) {
 	}
 
 	function moveOnKeyPress(box, employees, key) {
-		if (key.keyCode === 65 || key.keyCode === 37) {  // A (65) / Left (37)
-			if (box.position.x != APP_BORDER) box.position.x -= box.width;
-		}
-		if (key.keyCode === 87 || key.keyCode === 38) {  // W (87) / Up (38)
-			if (box.position.y != APP_BORDER_TOP) box.position.y -= box.height;
-		}
-		if (key.keyCode === 68 || key.keyCode === 39) {  // D (68) / Right (39)
-			if (box.position.x != APP_WIDTH - APP_BORDER - box.width) box.position.x += box.width;
-		}
-		if (key.keyCode === 83 || key.keyCode === 40) {  // S (83) / Down (40)
-			if (box.position.y != APP_HEIGHT - APP_BORDER - box.height) box.position.y += box.height;
-		}
+		if (isGameInProgress()) {
+			if (key.keyCode === 65 || key.keyCode === 37) {  // A (65) / Left (37)
+				if (box.position.x != APP_BORDER) box.position.x -= box.width;
+			}
+			if (key.keyCode === 87 || key.keyCode === 38) {  // W (87) / Up (38)
+				if (box.position.y != APP_BORDER_TOP) box.position.y -= box.height;
+			}
+			if (key.keyCode === 68 || key.keyCode === 39) {  // D (68) / Right (39)
+				if (box.position.x != APP_WIDTH - APP_BORDER - box.width) box.position.x += box.width;
+			}
+			if (key.keyCode === 83 || key.keyCode === 40) {  // S (83) / Down (40)
+				if (box.position.y != APP_HEIGHT - APP_BORDER - box.height) box.position.y += box.height;
+			}
 
-		if (key.keyCode === 49) handleCheering(box, employees, 1) // 1 (49)
-		if (key.keyCode === 50) handleCheering(box, employees, 2) // 2 (50)
-		if (key.keyCode === 51) handleCheering(box, employees, 3) // 3 (51)
+			if (key.keyCode === 49) handleCheering(box, employees, 1) // 1 (49)
+			if (key.keyCode === 50) handleCheering(box, employees, 2) // 2 (50)
+			if (key.keyCode === 51) handleCheering(box, employees, 3) // 3 (51)
+		}
 	}
 
 	function handleCheering(player, employees, cheering) {
@@ -212,7 +247,9 @@ const startGame = function(app, userCheerings) {
 
 	function cheerEmployee(employee) {
 		employee.obj.filters = [colorFilter]
-		employee.cheered = true
+		employee.state = 'cheered'
+		lazyEmployeesCount -= 1
+		renderScore()
 	}
 
 	function isCheered(player, employee, cheering) {
@@ -274,6 +311,14 @@ const startGame = function(app, userCheerings) {
 
 		const direction = (x - end) > 0 ? -1 : 1
 		return x + (speed * direction)
+	}
+
+	function isGameInProgress() {
+		return timeleft > 0 && lazyEmployeesCount > 0
+	}
+
+	function isGameEnded() {
+		return !isGameInProgress()
 	}
 }
 

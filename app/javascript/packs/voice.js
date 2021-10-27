@@ -79,7 +79,9 @@ const handleOnLoad = function() {
     recognition.onerror = function(event) {
       testBtn.disabled = false;
       testBtn.textContent = 'Начать тест речи';
-      diagnosticPara.textContent = 'Error occurred in recognition: ' + event.error;
+
+      const errorText = event.error === 'not-allowed' ? 'Пожалуйста разрешите доступ к микрофону в вашем браузере. Мы не будем никуда отправлять то, что услышим :)' : event.error
+      diagnosticPara.textContent = 'Ошибка: ' + errorText;
     }
 
     recognition.onaudiostart = function(event) {
@@ -122,7 +124,7 @@ const handleOnLoad = function() {
     }
   }
 
-  testBtn.addEventListener('click', testSpeech);
+  if (testBtn) testBtn.addEventListener('click', testSpeech);
 }
 
 document.addEventListener("turbolinks:load", handleOnLoad);
