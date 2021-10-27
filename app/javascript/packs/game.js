@@ -15,7 +15,7 @@ const EMPLOYEE_D = 2 * EMPLOYEE_R
 
 const GAME_TIME = 60 // seconds
 
-const EMPLOYEES_COUNT = 3
+const EMPLOYEES_COUNT = 100
 const EMPLOYEE_ROLES = [
 	{'type': 'developer', 'color': 0xffeb3b}, // yellow
 	{'type': 'devops', 'color': 0x24c875}, // green
@@ -42,7 +42,7 @@ const handleOnLoad = function() {
 	createGameContainer(app)
 
 	getCheerings().then(({userCheerings}) => {
-		startGame(app, userCheerings)
+		renderGame(app, userCheerings)
 	})
 }
 
@@ -52,7 +52,7 @@ const createGameContainer = function(app) {
 	element.appendChild(app.view);
 }
 
-const startGame = function(app, userCheerings) {
+const renderGame = function(app, userCheerings) {
 	// Add a variable to count up the seconds our demo has been running
 	let elapsed = 0.0;
 
@@ -62,16 +62,17 @@ const startGame = function(app, userCheerings) {
 	let cheeringTimeout
 
 	let lazyEmployeesCount = EMPLOYEES_COUNT
+	let timeleft = GAME_TIME;
 
 	document.addEventListener('keydown', (k) => moveOnKeyPress(player, employees, k));
 
 	const timerContainer = document.getElementById("gameTimer")
 	const scoreContainer = document.getElementById("gameScoreCounter")
-	renderScore()
+	renderScore(lazyEmployeesCount)
+	renderTimer(timeleft)
 
-	let timeleft = GAME_TIME;
-	if (timerContainer) startTimer()
-	if (timeleft <= 0 || lazyEmployeesCount <= 0) showGameResult(app)
+	let gameTimer
+	if (timerContainer) gameTimer = startTimer()
 
 	app.ticker.add((delta) => {
 		elapsed += delta;
@@ -81,20 +82,32 @@ const startGame = function(app, userCheerings) {
 	});
 
 	function showGameResult(app) {
-		// console.log("FINISHED")
+		lazyEmployeesCount > 0 ? drawResultText(app, "Потрачено\n😞") : drawResultText(app, "Это победа!\n🎉")
 	}
 
-	function renderScore() {
-		scoreContainer.innerHTML = '1 vs ' + lazyEmployeesCount
+	function renderScore(score) {
+		scoreContainer.innerHTML = '1 vs ' + score
+	}
+	function renderTimer(time) {
+		timerContainer.innerHTML = Math.round(time);
 	}
 
 	function startTimer() {
-		const gameTimer = setInterval(() => {
-			if (isGameEnded()) clearInterval(gameTimer);
-
-			timerContainer.innerHTML = Math.round(timeleft);
+		const timer = setInterval(() => {
 			timeleft -= 1;
+
+			stopGameIfNeeded(app, timer)
+			renderTimer(timeleft)
 		}, 1000);
+
+		return timer
+	}
+
+	function stopGameIfNeeded(app, timer) {
+		if (isGameEnded()) {
+			clearInterval(timer)
+			showGameResult(app)
+		}
 	}
 
 	function drawPlayer(app) {
@@ -187,19 +200,41 @@ const startGame = function(app, userCheerings) {
 			fill: "white",
 			fontSize: 40,
 			fontWeight: 'bold',
-			align: "right",
+			// align: "right",
 			width: app.screen.width,
 			wordWrapWidth: 560,
 			wordWrap: true,
 			breakWords: true,
 		});
 
-		text.x = APP_BORDER
-		text.y = 20
+		text.x = APP_WIDTH / 2
+		text.y = APP_HEIGHT / 3
+		text.anchor.x = 0.5
 
-		app.stage.addChild(text);
+		app.stage.addChild(text)
 
 		return text
+	}
+
+	function drawResultText(app, text) {
+		const textObj = new PIXI.Text(text, {
+			fill: "white",
+			fontSize: 40,
+			fontWeight: 'bold',
+			align: "center",
+			width: app.screen.width,
+			wordWrapWidth: 560,
+			wordWrap: true,
+			breakWords: true,
+		});
+
+		textObj.x = APP_WIDTH / 2
+		textObj.y = APP_HEIGHT / 3
+		textObj.anchor.x = 0.5
+
+		app.stage.addChild(textObj)
+
+		return textObj
 	}
 
 	function randomEmployeeRole() {
@@ -249,6 +284,8 @@ const startGame = function(app, userCheerings) {
 		employee.obj.filters = [colorFilter]
 		employee.state = 'cheered'
 		lazyEmployeesCount -= 1
+
+		stopGameIfNeeded(app, gameTimer)
 		renderScore()
 	}
 
