@@ -18,15 +18,12 @@
             - text = cheering.present? ? cheering.text : role[:type]
 
             = render partial: "web/games/cheerings/#{role[:type]}", locals: { color: role[:color], text: text }
-
+        %br
+        %br
         .container
           #voiceContainer
             %button
-              Start new test
+              Начать тест речи
             %div
-              %p.phrase
-                Phrase...
-              %p.result
-                Right or wrong?
               %p.output
-                "...diagnostic messages"
+                = "...отладочная информация"
