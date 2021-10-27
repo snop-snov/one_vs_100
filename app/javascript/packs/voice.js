@@ -1,22 +1,7 @@
-let SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
-let SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
-let SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
-
-export default {
-  startListening() {
-    var recognition = new SpeechRecognition();
-    // var speechRecognitionList = new SpeechGrammarList();
-    // recognition.grammars = speechRecognitionList;
-    recognition.lang = 'ru-RU';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.start();
-  }
-}
-
 const handleOnLoad = function() {
-  startListening()
+  var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+  var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+  var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
 
   var phrases = [
     'I love to sing because it\'s fun',

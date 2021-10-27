@@ -92,4 +92,5 @@ RUN yarn install --check-files
 
 EXPOSE 3000
 
-ENTRYPOINT ["./docker-entrypoint.sh"]
+# ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD ./bin/rails s -b '0.0.0.0' -p 3000
