@@ -53,26 +53,33 @@ const createGameContainer = function(app) {
 }
 
 const renderGame = function(app, userCheerings) {
-	// Add a variable to count up the seconds our demo has been running
-	let elapsed = 0.0;
+	startGame(app, userCheerings)
+}
 
-	let employees = drawEmployees(app);
-	let player = drawPlayer(app);
+function startGame(app, userCheerings) {
+	let elapsed = 0.0; // Time since start
+
+	// TMP
 	let cheeringText = drawCheeringText(app)
 	let cheeringTimeout
+	// TMP
 
 	let lazyEmployeesCount = EMPLOYEES_COUNT
-	let timeleft = GAME_TIME;
-
-	document.addEventListener('keydown', (k) => moveOnKeyPress(player, employees, k));
+	let timeleft = GAME_TIME
 
 	const timerContainer = document.getElementById("gameTimer")
 	const scoreContainer = document.getElementById("gameScoreCounter")
+
 	renderScore(lazyEmployeesCount)
 	renderTimer(timeleft)
 
 	let gameTimer
 	if (timerContainer) gameTimer = startTimer()
+
+	let employees = drawEmployees(app)
+	let player = drawPlayer(app)
+
+	document.addEventListener('keydown', (k) => moveOnKeyPress(player, employees, k));
 
 	app.ticker.add((delta) => {
 		elapsed += delta;
@@ -88,6 +95,7 @@ const renderGame = function(app, userCheerings) {
 	function renderScore(score) {
 		scoreContainer.innerHTML = '1 vs ' + score
 	}
+
 	function renderTimer(time) {
 		timerContainer.innerHTML = Math.round(time);
 	}
@@ -286,7 +294,7 @@ const renderGame = function(app, userCheerings) {
 		lazyEmployeesCount -= 1
 
 		stopGameIfNeeded(app, gameTimer)
-		renderScore()
+		renderScore(lazyEmployeesCount)
 	}
 
 	function isCheered(player, employee, cheering) {
