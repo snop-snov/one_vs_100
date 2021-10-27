@@ -1,3 +1,51 @@
+export default class VoiceListener {
+  constructor(settings) {
+    var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+    var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+    var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
+
+    var grammar = '#JSGF V1.0; grammar phrase; public <phrase> = ' +';';
+    this.recognition = new SpeechRecognition();
+    this.speechRecognitionList = new SpeechGrammarList();
+    this.speechRecognitionList.addFromString(grammar, 1);
+    this.recognition.grammars = this.speechRecognitionList;
+    this.recognition.lang = 'ru-RU';
+    this.recognition.interimResults = false;
+    this.recognition.maxAlternatives = 1;
+
+    this.diagnosticPara = document.querySelector('.output');
+
+    // this.recognition.onTap = this.settings.onTap.bind(this)
+    // this.recognition.onresult = this.settings.onresult.bind(this)
+    // this.recognition.onspeechend = this.settings.onspeechend.bind(this)
+    this.recognition.onerror = this.onError.bind(this)
+    // this.recognition.onaudiostart = this.settings.onaudiostart.bind(this)
+    // this.recognition.onaudioend = this.settings.onaudioend.bind(this)
+    // this.recognition.onend = this.settings.onend.bind(this)
+    // this.recognition.onnomatch = this.settings.onnomatch.bind(this)
+    // this.recognition.onsoundstart = this.settings.onsoundstart.bind(this)
+    // this.recognition.onsoundend = this.settings.onsoundend.bind(this)
+    // this.recognition.onspeechstart = this.settings.onspeechstart.bind(this)
+    // this.recognition.onstart = this.settings.onstart.bind(this)
+  }
+
+  startListen() {
+    this.recognition.start();
+  }
+
+  stopListen() {
+    this.recognition.start();
+  }
+
+  onError(event) {
+    const errorText = event.error === 'not-allowed' ? 'Пожалуйста разрешите доступ к микрофону в вашем браузере. Мы не будем никуда отправлять то, что услышим :)' : event.error
+    this.diagnosticPara.textContent = 'Ошибка: ' + errorText;
+  }
+}
+
+
+
+
 const handleOnLoad = function() {
   var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
   var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;

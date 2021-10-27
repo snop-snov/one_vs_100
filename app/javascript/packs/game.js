@@ -1,6 +1,12 @@
 import * as PIXI from 'pixi.js'
-import FetchHelpers from './lib/FetchHelpers';
 import { ColorOverlayFilter } from '@pixi/filter-color-overlay';
+import { InteractionManager } from '@pixi/interaction';
+
+import FetchHelpers from './lib/FetchHelpers';
+import Button from './lib/button';
+import VoiceListener from './voice';
+
+PIXI.Renderer.registerPlugin('interaction', InteractionManager)
 
 const APP_WIDTH = 600
 const APP_HEIGHT = 600
@@ -53,7 +59,30 @@ const createGameContainer = function(app) {
 }
 
 const renderGame = function(app, userCheerings) {
-	startGame(app, userCheerings)
+	renderStartButton(app, userCheerings)
+}
+
+const renderStartButton = function(app, userCheerings) {
+	const button = new Button({
+		label: "Начать игру",
+		width: 270,
+    height: 80,
+		onTap: () => {
+			startGame(app, userCheerings)
+			app.stage.removeChild(button)
+			startVoiceListener()
+		},
+	})
+
+	button.x = APP_WIDTH / 2
+	button.y = APP_HEIGHT / 2
+
+	app.stage.addChild(button)
+}
+
+const startVoiceListener = function() {
+	const listener = new VoiceListener({})
+	listener.startListen()
 }
 
 function startGame(app, userCheerings) {
