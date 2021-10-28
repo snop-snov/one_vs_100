@@ -67,11 +67,7 @@ const renderStartButton = function(app, userCheerings) {
 		label: "Начать игру",
 		width: 270,
     height: 80,
-		onTap: () => {
-			startGame(app, userCheerings)
-			app.stage.removeChild(button)
-			startVoiceListener()
-		},
+		onTap: () => handleStartGame(app, userCheerings),
 	})
 
 	button.x = APP_WIDTH / 2
@@ -85,11 +81,7 @@ const renderRestartButton = function(app, userCheerings) {
 		label: "Ещё раз!",
 		width: 270,
     height: 80,
-		onTap: () => {
-			clearGame(app)
-			startGame(app, userCheerings)
-			startVoiceListener()
-		},
+		onTap: () => handleStartGame(app, userCheerings),
 	})
 
 	button.x = APP_WIDTH / 2
@@ -98,9 +90,15 @@ const renderRestartButton = function(app, userCheerings) {
 	app.stage.addChild(button)
 }
 
+const handleStartGame = (app, userCheerings) => {
+	clearGame(app)
+	startGame(app, userCheerings)
+	startVoiceListener()
+}
+
 const clearGame = function(app) {
-	// TODO
-	app.stage.children.forEach((c) => app.stage.removeChild(c))
+	const stage = app.stage
+	while(stage.children[0]) { stage.removeChild(stage.children[0]); }
 }
 
 const startVoiceListener = function() {
@@ -142,7 +140,7 @@ function startGame(app, userCheerings) {
 
 	function showGameResult(app) {
 		lazyEmployeesCount > 0 ? drawResultText(app, "Потрачено\n😞") : drawResultText(app, "Это победа!\n🎉")
-		renderRestartButton
+		renderRestartButton(app, userCheerings)
 	}
 
 	function renderScore(score) {
@@ -225,7 +223,7 @@ function startGame(app, userCheerings) {
 			employees.push(employee)
 		})
 
-		return employees;
+		return employees
 	}
 
 	function drawEmployee(role, cheering, app, i) {
