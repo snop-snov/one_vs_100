@@ -80,6 +80,29 @@ const renderStartButton = function(app, userCheerings) {
 	app.stage.addChild(button)
 }
 
+const renderRestartButton = function(app, userCheerings) {
+	const button = new Button({
+		label: "Ещё раз!",
+		width: 270,
+    height: 80,
+		onTap: () => {
+			clearGame(app)
+			startGame(app, userCheerings)
+			startVoiceListener()
+		},
+	})
+
+	button.x = APP_WIDTH / 2
+	button.y = APP_HEIGHT / 2 + 70
+
+	app.stage.addChild(button)
+}
+
+const clearGame = function(app) {
+	// TODO
+	app.stage.children.forEach((c) => app.stage.removeChild(c))
+}
+
 const startVoiceListener = function() {
 	const listener = new VoiceListener({})
 	listener.startListen()
@@ -119,6 +142,7 @@ function startGame(app, userCheerings) {
 
 	function showGameResult(app) {
 		lazyEmployeesCount > 0 ? drawResultText(app, "Потрачено\n😞") : drawResultText(app, "Это победа!\n🎉")
+		renderRestartButton
 	}
 
 	function renderScore(score) {
@@ -144,6 +168,7 @@ function startGame(app, userCheerings) {
 		if (isGameEnded()) {
 			clearInterval(timer)
 			showGameResult(app)
+			renderRestartButton(app, userCheerings)
 		}
 	}
 
@@ -248,7 +273,8 @@ function startGame(app, userCheerings) {
 		text.y = APP_HEIGHT / 3
 		text.anchor.x = 0.5
 
-		app.stage.addChild(text)
+		// TMP hide
+		// app.stage.addChild(text)
 
 		return text
 	}
@@ -327,7 +353,7 @@ function startGame(app, userCheerings) {
 	}
 
 	function isCheered(player, employee, cheering) {
-		return isAroundPlayer(player, employee) && isCompatibleRole(employee, cheering)
+		return employee.state === 'lazy' && isAroundPlayer(player, employee) && isCompatibleRole(employee, cheering)
 	}
 
 	function isCompatibleRole(employee, cheering) {
