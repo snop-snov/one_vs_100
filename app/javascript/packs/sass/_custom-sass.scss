@@ -1,27 +1,15 @@
-.user-holder{
-  img {
-    width: 50px;
-    margin-right: 10px;
-  }
-}
-
 .waves-button-input{
   display: inline-block;
   cursor: pointer;
 }
 
-#logo-container {
+.row {
   display: flex;
-  justify-content: center;
-  align-items: center;
-    img {
-      width: 147px;
-      height: 41px;
-    }
-  .logo-text {
-    color: #b2edff;
-    font-size: 14px;
-    margin-left: 10px;
-    margin-top: 4px;
-  }
+}
+.column {
+  flex: 50%;
+}
+
+.cheering-input {
+  width: 30% !important;
 }
