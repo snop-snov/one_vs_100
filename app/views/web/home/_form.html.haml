@@ -1,8 +1,14 @@
+:css
+  .cheering-input {
+    width: 30% !important;
+  }
+
 = form_with model: user_cheering, url: url do |form|
   - if user_cheering.errors.present?
     .card-panel.red
       = user_cheering.errors.full_messages.join(' ,')
 
   = form.hidden_field :employee_role, value: user_cheering.employee_role
-  = form.text_field :text, required: true, placeholder: 'Твой подбадривающий текст', class: 'materialize-textarea', autofocus: true
+  = form.text_field :text, required: true, placeholder: 'Твой подбадривающий текст', class: 'materialize-text cheering-input', autofocus: true, style: { width: '30%' }
+  %br
   = form.submit 'Запомнить', class: 'btn waves-effect waves-light'

@@ -7,4 +7,6 @@
 
     %h5.center
       = render partial: "web/home/roles/#{@new_cheering.employee_role}"
+      %br
+      %br
       = render partial: 'form', locals: { user_cheering: @new_cheering, url: user_cheerings_path }
