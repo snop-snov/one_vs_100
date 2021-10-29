@@ -4,7 +4,7 @@ import { Text } from '@pixi/text'
 
 export default class Button extends NineSlicePlane {
     constructor(settings) {
-        const texture = Texture.from('button.png')
+        const texture = Texture.from('images/button.png')
         const notScalableArea = 20 // Indent from left, top, right and bottom sides in pixels
         super(texture, notScalableArea, notScalableArea, notScalableArea, notScalableArea)
 
