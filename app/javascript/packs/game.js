@@ -13,7 +13,7 @@ const APP_HEIGHT = 600
 const APP_BORDER_TOP = 45
 const APP_BORDER = 45
 
-const CHEERING_R = 40
+const CHEERING_R = 100
 const CHEERING_TIME = 2 * 1000 // 2 seconds
 
 const EMPLOYEE_R = APP_WIDTH / 70
@@ -93,7 +93,6 @@ const renderRestartButton = function(app, userCheerings) {
 const handleStartGame = (app, userCheerings) => {
 	clearGame(app)
 	startGame(app, userCheerings)
-	startVoiceListener()
 }
 
 const clearGame = function(app) {
@@ -101,18 +100,9 @@ const clearGame = function(app) {
 	while(stage.children[0]) { stage.removeChild(stage.children[0]); }
 }
 
-const startVoiceListener = function() {
-	const listener = new VoiceListener({})
-	listener.startListen()
-}
-
 function startGame(app, userCheerings) {
+	const voiceListener = startVoiceListener(userCheerings)
 	let elapsed = 0.0; // Time since start
-
-	// TMP
-	let cheeringText = drawCheeringText(app)
-	let cheeringTimeout
-	// TMP
 
 	let lazyEmployeesCount = EMPLOYEES_COUNT
 	let timeleft = GAME_TIME
@@ -162,11 +152,26 @@ function startGame(app, userCheerings) {
 		return timer
 	}
 
+	function startVoiceListener(userCheerings) {
+		const cheeringPhrases = userCheerings.map((c) => c.text)
+		const settings = {
+			cheeringPhrases,
+			// onResult: (hits) => handleCheeringHits(player, employees, hits),
+			onResult: (hits) => handleCheeringHits(player, employees, hits),
+		}
+
+		const listener = new VoiceListener(settings)
+		listener.startListen()
+
+		return listener
+	}
+
 	function stopGameIfNeeded(app, timer) {
 		if (isGameEnded()) {
 			clearInterval(timer)
 			showGameResult(app)
 			renderRestartButton(app, userCheerings)
+			voiceListener.stopListen()
 		}
 	}
 
@@ -255,28 +260,6 @@ function startGame(app, userCheerings) {
 		return employee;
 	}
 
-	function drawCheeringText(app) {
-		const text = new PIXI.Text('', {
-			fill: "white",
-			fontSize: 40,
-			fontWeight: 'bold',
-			// align: "right",
-			width: app.screen.width,
-			wordWrapWidth: 560,
-			wordWrap: true,
-			breakWords: true,
-		});
-
-		text.x = APP_WIDTH / 2
-		text.y = APP_HEIGHT / 3
-		text.anchor.x = 0.5
-
-		// TMP hide
-		// app.stage.addChild(text)
-
-		return text
-	}
-
 	function drawResultText(app, text) {
 		const textObj = new PIXI.Text(text, {
 			fill: "white",
@@ -324,21 +307,22 @@ function startGame(app, userCheerings) {
 		}
 	}
 
-	function handleCheering(player, employees, cheering) {
-		showCheeringText(cheering)
+	function handleCheeringHits(player, employees, hits) {
+		const cheeringTexts = Object.keys(hits)
 
-		const cheeredEmployees = employees.filter((e) => isCheered(player, e, cheering))
-		cheeredEmployees.forEach(cheerEmployee)
+		cheeringTexts.forEach((text) => {
+			const index = userCheerings.findIndex((cheering) => cheering.text === text )
+			const count = hits[text]
+
+			for(var i = 0; i < count; i++){
+				handleCheering(player, employees, index)
+			}
+		})
 	}
 
-	function showCheeringText(cheeringIndex) {
-		const playerCheeringRole = EMPLOYEE_ROLES[cheeringIndex - 1].type
-		const newText = cheeringTextByRole(playerCheeringRole)
-
-		cheeringText.text = newText
-
-		if (cheeringTimeout) clearTimeout(cheeringTimeout)
-		cheeringTimeout = setTimeout(() => cheeringText.text = '', CHEERING_TIME)
+	function handleCheering(player, employees, cheeringIndex) {
+		const cheeredEmployees = employees.filter((e) => isCheered(player, e, cheeringIndex))
+		cheeredEmployees.forEach(cheerEmployee)
 	}
 
 	function cheerEmployee(employee) {
@@ -350,12 +334,12 @@ function startGame(app, userCheerings) {
 		renderScore(lazyEmployeesCount)
 	}
 
-	function isCheered(player, employee, cheering) {
-		return employee.state === 'lazy' && isAroundPlayer(player, employee) && isCompatibleRole(employee, cheering)
+	function isCheered(player, employee, cheeringIndex) {
+		return employee.state === 'lazy' && isAroundPlayer(player, employee) && isCompatibleRole(employee, cheeringIndex)
 	}
 
-	function isCompatibleRole(employee, cheering) {
-		const playerCheeringRole = EMPLOYEE_ROLES[cheering - 1].type
+	function isCompatibleRole(employee, cheeringIndex) {
+		const playerCheeringRole = EMPLOYEE_ROLES[cheeringIndex].type
 		const employeeRole = employee.role.type
 
 		return playerCheeringRole === employeeRole
