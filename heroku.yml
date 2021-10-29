@@ -14,4 +14,6 @@ release:
     - ./deployment-tasks.sh
   image: web
 run:
-  web: rake assets:precompile && bundle exec puma -C config/puma.rb
+  # TMP switched to RAILS_ENV=development
+  # web: rake assets:precompile && bundle exec puma -C config/puma.rb
+  web: bundle exec puma -C config/puma.rb
