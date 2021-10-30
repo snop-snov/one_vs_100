@@ -3,42 +3,13 @@ import { ColorOverlayFilter } from '@pixi/filter-color-overlay';
 import { InteractionManager } from '@pixi/interaction';
 
 import FetchHelpers from './lib/FetchHelpers';
-import Button from './lib/button';
+import { between } from './lib/helpers'
+
 import VoiceListener from './voice';
+import { GAME_TIME, APP_WIDTH, APP_HEIGHT, APP_BORDER, APP_BORDER_TOP, CHEERING_R, EMPLOYEE_D, EMPLOYEES_COUNT, EMPLOYEE_ROLES } from './constants'
+import { renderGame, renderScore, renderTimer, renderStartButton, renderRestartButton, renderEmployees, renderPlayer, renderResultText } from './render'
 
 PIXI.Renderer.registerPlugin('interaction', InteractionManager)
-
-const APP_WIDTH = 600
-const APP_HEIGHT = 600
-const APP_BORDER_TOP = 45
-const APP_BORDER = 45
-
-const CHEERING_R = 100
-const CHEERING_TIME = 2 * 1000 // 2 seconds
-
-const EMPLOYEE_R = APP_WIDTH / 70
-const EMPLOYEE_D = 2 * EMPLOYEE_R
-
-const GAME_TIME = 60 // seconds
-
-const EMPLOYEES_COUNT = 100
-const EMPLOYEE_ROLES = [
-	{'type': 'developer', 'color': 0xffeb3b}, // yellow
-	{'type': 'devops', 'color': 0x24c875}, // green
-	{'type': 'sales', 'color': 0x2196F3}, // blue
-]
-const random = (min, max) => {
-	const diff = max - min;
-	let rand = Math.random();
-
-	rand = Math.floor(rand * diff);
-	rand = rand + min;
-
-	return rand;
-}
-const borderMax = (x, max) => x <= max ? x : max
-const borderMin = (x, min) => x >= min ? x : min
-const between = (x, min, max) => borderMin(borderMax(x, max), min)
 
 const colorFilter = new ColorOverlayFilter(0x000020, 0.6)
 
@@ -48,7 +19,7 @@ const handleOnLoad = function() {
 	createGameContainer(app)
 
 	getCheerings().then(({userCheerings}) => {
-		renderGame(app, userCheerings)
+		renderGame(app, () => handleStartGame(app, userCheerings))
 	})
 }
 
@@ -58,39 +29,7 @@ const createGameContainer = function(app) {
 	element.appendChild(app.view);
 }
 
-const renderGame = function(app, userCheerings) {
-	renderStartButton(app, userCheerings)
-}
-
-const renderStartButton = function(app, userCheerings) {
-	const button = new Button({
-		label: "Начать игру",
-		width: 270,
-    height: 80,
-		onTap: () => handleStartGame(app, userCheerings),
-	})
-
-	button.x = APP_WIDTH / 2
-	button.y = APP_HEIGHT / 2
-
-	app.stage.addChild(button)
-}
-
-const renderRestartButton = function(app, userCheerings) {
-	const button = new Button({
-		label: "Ещё раз!",
-		width: 270,
-    height: 80,
-		onTap: () => handleStartGame(app, userCheerings),
-	})
-
-	button.x = APP_WIDTH / 2
-	button.y = APP_HEIGHT / 2 + 70
-
-	app.stage.addChild(button)
-}
-
-const handleStartGame = (app, userCheerings) => {
+function handleStartGame(app, userCheerings) {
 	clearGame(app)
 	startGame(app, userCheerings)
 }
@@ -106,19 +45,19 @@ function startGame(app, userCheerings) {
 	let lazyEmployeesCount = EMPLOYEES_COUNT
 	let timeLeft = GAME_TIME
 
-	const timerContainer = document.getElementById("gameTimer")
 	const scoreContainer = document.getElementById("gameScoreCounter")
+	const timerContainer = document.getElementById("gameTimer")
 
-	renderScore(lazyEmployeesCount)
-	renderTimer(timeLeft)
+	renderScore(scoreContainer, lazyEmployeesCount)
+	renderTimer(timerContainer, timeLeft)
 
 	let gameTimer
 	if (timerContainer) gameTimer = startTimer()
 
 	const voiceListener = startVoiceListener(userCheerings)
 
-	let employees = drawEmployees(app)
-	let player = drawPlayer(app)
+	let employees = renderEmployees(app, (r) => cheeringTextByRole(r))
+	let player = renderPlayer(app)
 
 	document.addEventListener('keydown', (k) => moveOnKeyPress(player, employees, k));
 
@@ -130,15 +69,7 @@ function startGame(app, userCheerings) {
 	});
 
 	function showGameResult(app) {
-		lazyEmployeesCount > 0 ? drawResultText(app, "Потрачено\n😞") : drawResultText(app, "Это победа!\n🎉")
-	}
-
-	function renderScore(score) {
-		scoreContainer.innerHTML = '1 vs ' + score
-	}
-
-	function renderTimer(time) {
-		timerContainer.innerHTML = Math.round(time);
+		lazyEmployeesCount > 0 ? renderResultText(app, "Потрачено\n😞") : renderResultText(app, "Это победа!\n🎉")
 	}
 
 	function startTimer() {
@@ -146,7 +77,7 @@ function startGame(app, userCheerings) {
 			timeLeft -= 1;
 
 			stopGameIfNeeded(app, timer)
-			renderTimer(timeLeft)
+			renderTimer(timerContainer, timeLeft)
 		}, 1000);
 
 		return timer
@@ -170,27 +101,9 @@ function startGame(app, userCheerings) {
 		if (isGameEnded()) {
 			clearInterval(timer)
 			showGameResult(app)
-			renderRestartButton(app, userCheerings)
+			renderRestartButton(app, () => handleStartGame(app, userCheerings))
 			voiceListener.stopListen()
 		}
-	}
-
-	function drawPlayer(app) {
-		const w = APP_WIDTH / 40;
-		const h = APP_HEIGHT / 40;
-		const x = 0;
-		const y = 0;
-
-		let obj = new PIXI.Graphics();
-		obj.beginFill(0xF44336);
-		obj.drawRect(x, y, w, h);
-		obj.endFill();
-		obj.position.x = APP_BORDER
-		obj.position.y = APP_BORDER_TOP
-
-		app.stage.addChild(obj);
-
-		return obj;
 	}
 
 	function moveEmployee(e) {
@@ -209,81 +122,6 @@ function startGame(app, userCheerings) {
 		e.obj.y = moveToPoint(e.obj.y, y, 1)
 
 		if (e.obj.x == x && e.obj.y == y) e.state = 'cheered'
-	}
-
-	function drawEmployees(app) {
-		const r = EMPLOYEE_R;
-
-		let roles = [];
-		let employees = [];
-
-		for(var i = 0; i < EMPLOYEES_COUNT; i++){
-			const e = randomEmployeeRole()
-			roles.push(e)
-		}
-
-		roles.map((role, i) => {
-			const cheering = cheeringTextByRole(role.type)
-			const employee = drawEmployee(role, cheering, app, i)
-			employees.push(employee)
-		})
-
-		return employees
-	}
-
-	function drawEmployee(role, cheering, app, i) {
-		const r = EMPLOYEE_R;
-
-		let obj = new PIXI.Graphics();
-		obj.beginFill(role.color);
-		obj.position.x = random(APP_BORDER, APP_WIDTH - EMPLOYEE_D - APP_BORDER)
-		obj.position.y = random(APP_BORDER_TOP, APP_HEIGHT - EMPLOYEE_D - APP_BORDER)
-		obj.drawCircle(r, r, r);
-		obj.endFill();
-
-		app.stage.addChild(obj);
-
-		const x = random(100, 450)
-		const y = random(100, 450)
-
-		const employee = {
-			startPosition: {x: obj.position.x, y: obj.position.y},
-			endPosition: employeePositionByIndex(i),
-			state: 'lazy',
-			magicNumbers: {x: x, y: y},
-			obj,
-			cheeringText: cheering.text,
-			role,
-			i,
-		}
-
-		return employee;
-	}
-
-	function drawResultText(app, text) {
-		const textObj = new PIXI.Text(text, {
-			fill: "white",
-			fontSize: 40,
-			fontWeight: 'bold',
-			align: "center",
-			width: app.screen.width,
-			wordWrapWidth: 560,
-			wordWrap: true,
-			breakWords: true,
-		});
-
-		textObj.x = APP_WIDTH / 2
-		textObj.y = APP_HEIGHT / 3
-		textObj.anchor.x = 0.5
-
-		app.stage.addChild(textObj)
-
-		return textObj
-	}
-
-	function randomEmployeeRole() {
-		const i = random(0, EMPLOYEE_ROLES.length)
-		return EMPLOYEE_ROLES[i]
 	}
 
 	function moveOnKeyPress(box, employees, key) {
@@ -306,8 +144,8 @@ function startGame(app, userCheerings) {
 	function handleVoiceError(app, errorText) {
 		clearGame(app)
 		clearInterval(gameTimer)
-		drawResultText(app, errorText)
-		renderRestartButton(app, userCheerings)
+		renderResultText(app, errorText)
+		renderRestartButton(app, () => handleStartGame(app, userCheerings))
 		voiceListener.stopListen()
 	}
 
@@ -335,7 +173,7 @@ function startGame(app, userCheerings) {
 		lazyEmployeesCount -= 1
 
 		stopGameIfNeeded(app, gameTimer)
-		renderScore(lazyEmployeesCount)
+		renderScore(scoreContainer, lazyEmployeesCount)
 	}
 
 	function isCheered(player, employee, cheeringIndex) {
@@ -365,31 +203,6 @@ function startGame(app, userCheerings) {
 	function cheeringTextByRole(roleType) {
 		const c = userCheerings.find((c) => c.employeeRole === roleType)
 		return c ? c.text : roleType
-	}
-
-	function employeePositionByIndex(i) {
-		const perSide = Math.ceil(EMPLOYEES_COUNT / 4.0)
-		const stepX = APP_WIDTH / perSide
-		const stepY = APP_HEIGHT / perSide
-
-		let x
-		let y
-
-		if (i < perSide) { // TOP
-			x = i * stepX
-			y = 0
-		} else if (i < 2*perSide) { // RIGHT
-			x = APP_WIDTH - EMPLOYEE_D
-			y = (i - perSide) * stepY
-		} else if (i < 3*perSide) { // BOTTOM
-			x = (i - 2*perSide) * stepX
-			y = APP_HEIGHT - EMPLOYEE_D
-		} else { // LEFT
-			x = 0
-			y = (i - 3*perSide) * stepY
-		}
-
-		return {x, y}
 	}
 
 	function moveToPoint(x, end, speed) {
