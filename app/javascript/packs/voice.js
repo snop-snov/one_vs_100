@@ -53,7 +53,20 @@ export default class VoiceListener {
   }
 
   onError(event) {
-    const errorText = event.error === 'not-allowed' ? 'Пожалуйста разрешите доступ к микрофону' : event.error
+    let errorText
+    switch(event.error) {
+      case 'not-allowed':
+        errorText = 'Пожалуйста разрешите доступ к микрофону'
+        break
+
+      case 'no-speech':
+        errorText = 'Пожалуйста говорите после нажатия на кнопку'
+        break
+
+      default:
+        errorText = event.error
+    }
+
     this.diagnosticPara.textContent = 'Ошибка: ' + errorText;
 
     this.settings.onError(errorText)
