@@ -101,20 +101,21 @@ const clearGame = function(app) {
 }
 
 function startGame(app, userCheerings) {
-	const voiceListener = startVoiceListener(userCheerings)
 	let elapsed = 0.0; // Time since start
 
 	let lazyEmployeesCount = EMPLOYEES_COUNT
-	let timeleft = GAME_TIME
+	let timeLeft = GAME_TIME
 
 	const timerContainer = document.getElementById("gameTimer")
 	const scoreContainer = document.getElementById("gameScoreCounter")
 
 	renderScore(lazyEmployeesCount)
-	renderTimer(timeleft)
+	renderTimer(timeLeft)
 
 	let gameTimer
 	if (timerContainer) gameTimer = startTimer()
+
+	const voiceListener = startVoiceListener(userCheerings)
 
 	let employees = drawEmployees(app)
 	let player = drawPlayer(app)
@@ -130,7 +131,6 @@ function startGame(app, userCheerings) {
 
 	function showGameResult(app) {
 		lazyEmployeesCount > 0 ? drawResultText(app, "Потрачено\n😞") : drawResultText(app, "Это победа!\n🎉")
-		renderRestartButton(app, userCheerings)
 	}
 
 	function renderScore(score) {
@@ -143,10 +143,10 @@ function startGame(app, userCheerings) {
 
 	function startTimer() {
 		const timer = setInterval(() => {
-			timeleft -= 1;
+			timeLeft -= 1;
 
 			stopGameIfNeeded(app, timer)
-			renderTimer(timeleft)
+			renderTimer(timeLeft)
 		}, 1000);
 
 		return timer
@@ -156,8 +156,8 @@ function startGame(app, userCheerings) {
 		const cheeringPhrases = userCheerings.map((c) => c.text)
 		const settings = {
 			cheeringPhrases,
-			// onResult: (hits) => handleCheeringHits(player, employees, hits),
 			onResult: (hits) => handleCheeringHits(player, employees, hits),
+			onError: (errorText) => handleVoiceError(app, errorText),
 		}
 
 		const listener = new VoiceListener(settings)
@@ -300,11 +300,15 @@ function startGame(app, userCheerings) {
 			if (key.keyCode === 83 || key.keyCode === 40) {  // S (83) / Down (40)
 				if (box.position.y != APP_HEIGHT - APP_BORDER - box.height) box.position.y += box.height;
 			}
-
-			if (key.keyCode === 49) handleCheering(box, employees, 1) // 1 (49)
-			if (key.keyCode === 50) handleCheering(box, employees, 2) // 2 (50)
-			if (key.keyCode === 51) handleCheering(box, employees, 3) // 3 (51)
 		}
+	}
+
+	function handleVoiceError(app, errorText) {
+		clearGame(app)
+		clearInterval(gameTimer)
+		drawResultText(app, errorText)
+		renderRestartButton(app, userCheerings)
+		voiceListener.stopListen()
 	}
 
 	function handleCheeringHits(player, employees, hits) {
@@ -396,7 +400,7 @@ function startGame(app, userCheerings) {
 	}
 
 	function isGameInProgress() {
-		return timeleft > 0 && lazyEmployeesCount > 0
+		return timeLeft > 0 && lazyEmployeesCount > 0
 	}
 
 	function isGameEnded() {
