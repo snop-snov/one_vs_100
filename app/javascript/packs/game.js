@@ -6,8 +6,8 @@ import FetchHelpers from './lib/FetchHelpers'
 import { between } from './lib/helpers'
 
 import VoiceListener from './voice'
-import { GAME_TIME, APP_WIDTH, APP_HEIGHT, APP_BORDER, APP_BORDER_TOP, CHEERING_R, EMPLOYEE_D, EMPLOYEES_COUNT, EMPLOYEE_ROLES } from './constants'
-import { renderGame, renderScore, renderTimer, renderStartButton, renderRestartButton, renderEmployees, renderPlayer, renderResultText, renderCheeringCircle } from './render'
+import { GAME_TIME, APP_WIDTH, APP_HEIGHT, APP_BORDER, APP_BORDER_TOP, CHEERING_R, CHEERING_INNER_R, EMPLOYEE_D, EMPLOYEES_COUNT, EMPLOYEE_ROLES } from './constants'
+import { renderGame, renderScore, renderTimer, renderStartButton, renderRestartButton, renderEmployees, renderPlayer, renderResultText, renderCheeringCircle, setPlayerPosition, scaleCircle } from './render'
 
 PIXI.Renderer.registerPlugin('interaction', InteractionManager)
 
@@ -59,6 +59,8 @@ function startGame(app, userCheerings) {
 	let employees = renderEmployees(app, (r) => cheeringTextByRole(r))
 	let player = renderPlayer(app)
 
+	let circles = []
+
 	document.addEventListener('keydown', (k) => moveOnKeyPress(player, employees, k))
 
 	app.ticker.add((delta) => {
@@ -66,6 +68,8 @@ function startGame(app, userCheerings) {
 
 		if (isGameInProgress()) { employees.filter((e) => e.state === 'lazy').forEach(moveEmployee) }
 		employees.filter((e) => e.state === 'cheered').forEach(moveCheeredEmployee)
+
+		scaleCircles(circles)
 	})
 
 	function showGameResult(app) {
@@ -87,8 +91,10 @@ function startGame(app, userCheerings) {
 		const cheeringPhrases = userCheerings.map((c) => c.text)
 		const settings = {
 			cheeringPhrases,
-			onResult: (hits) => handleCheeringHits(player, employees, hits),
+			onResult: (hits) => handleCheeringHits(employees, hits),
 			onError: (errorText) => handleVoiceError(app, errorText),
+			onSpeechStart: (hits) => handleSpeechStart(app, player, hits),
+			onSpeechEnd: (hits) => handleSpeechEnd(app, player, hits),
 		}
 
 		const listener = new VoiceListener(settings)
@@ -124,21 +130,37 @@ function startGame(app, userCheerings) {
 		if (e.obj.x == x && e.obj.y == y) e.state = 'cheered'
 	}
 
-	function moveOnKeyPress(box, employees, key) {
+	function moveOnKeyPress(player, employees, key) {
 		if (isGameInProgress()) {
 			if (key.keyCode === 65 || key.keyCode === 37) {  // A (65) / Left (37)
-				if (box.position.x != APP_BORDER) box.position.x -= box.width;
+				if (player.x != APP_BORDER) {
+					player.x -= player.width
+				}
 			}
 			if (key.keyCode === 87 || key.keyCode === 38) {  // W (87) / Up (38)
-				if (box.position.y != APP_BORDER_TOP) box.position.y -= box.height;
+				if (player.y != APP_BORDER_TOP) {
+					player.y -= player.height
+				}
 			}
 			if (key.keyCode === 68 || key.keyCode === 39) {  // D (68) / Right (39)
-				if (box.position.x != APP_WIDTH - APP_BORDER - box.width) box.position.x += box.width;
+				if (player.x != APP_WIDTH - APP_BORDER - player.width) {
+					player.x += player.width
+				}
 			}
 			if (key.keyCode === 83 || key.keyCode === 40) {  // S (83) / Down (40)
-				if (box.position.y != APP_HEIGHT - APP_BORDER - box.height) box.position.y += box.height;
+				if (player.y != APP_HEIGHT - APP_BORDER - player.height) {
+					player.y += player.height
+				}
 			}
 		}
+	}
+
+	function handleSpeechStart(app, player, hits) {
+	}
+
+	function handleSpeechEnd(app, player, hits) {
+		// const c = renderCheeringCircle(app, player, CHEERING_INNER_R, 0xF44336)
+		// circles.push(c)
 	}
 
 	function handleVoiceError(app, errorText) {
@@ -149,21 +171,30 @@ function startGame(app, userCheerings) {
 		voiceListener.stopListen()
 	}
 
-	function handleCheeringHits(player, employees, hits) {
+	function handleCheeringHits(employees, hits) {
 		const cheeringTexts = Object.keys(hits)
 
+		if (cheeringTexts.length > 0) {
+			const index = userCheerings.findIndex((c) => c.text === cheeringTexts[0])
+			const c = renderCheeringCircle(app, player, CHEERING_R, EMPLOYEE_ROLES[index].color)
+			circles.push(c)
+		} else {
+			const c = renderCheeringCircle(app, player, CHEERING_INNER_R, 0xF44336)
+			circles.push(c)
+		}
+
 		cheeringTexts.forEach((text) => {
-			const index = userCheerings.findIndex((cheering) => cheering.text === text )
+			const index = userCheerings.findIndex((c) => c.text === text )
 			const count = hits[text]
 
 			for(var i = 0; i < count; i++){
-				handleCheering(player, employees, index)
+				handleCheering(employees, index)
 			}
 		})
 	}
 
-	function handleCheering(player, employees, cheeringIndex) {
-		const cheeredEmployees = employees.filter((e) => isCheered(player, e, cheeringIndex))
+	function handleCheering(employees, cheeringIndex) {
+		const cheeredEmployees = employees.filter((e) => isCheered(e, cheeringIndex))
 		cheeredEmployees.forEach(cheerEmployee)
 	}
 
@@ -176,8 +207,8 @@ function startGame(app, userCheerings) {
 		renderScore(scoreContainer, lazyEmployeesCount)
 	}
 
-	function isCheered(player, employee, cheeringIndex) {
-		return employee.state === 'lazy' && isAroundPlayer(player, employee) && isCompatibleRole(employee, cheeringIndex)
+	function isCheered(employee, cheeringIndex) {
+		return employee.state === 'lazy' && isAroundPlayer(employee) && isCompatibleRole(employee, cheeringIndex)
 	}
 
 	function isCompatibleRole(employee, cheeringIndex) {
@@ -187,7 +218,7 @@ function startGame(app, userCheerings) {
 		return playerCheeringRole === employeeRole
 	}
 
-	function isAroundPlayer(player, employee) {
+	function isAroundPlayer(employee) {
 		const a = employee.obj.position.x
 		const b = employee.obj.position.y
 		const x = player.position.x
@@ -218,6 +249,17 @@ function startGame(app, userCheerings) {
 
 	function isGameEnded() {
 		return !isGameInProgress()
+	}
+
+	function scaleCircles(circles) {
+		circles.forEach((c, i) => {
+			if (c.parent.scale.x < 1) {
+				scaleCircle(c, 0.05)
+			} else {
+				app.stage.removeChild(c.parent)
+				circles.splice(i, 1);
+			}
+		});
 	}
 }
 

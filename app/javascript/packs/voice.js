@@ -10,6 +10,7 @@ export default class VoiceListener {
     this.currentResultIndex = 0
     this.currentResultHitsCounts = {}
     this.fullSpeech = ''
+    this.speechStarted = false
 
     this.setCurrentResultHitsCountsToDefault()
 
@@ -73,7 +74,8 @@ export default class VoiceListener {
   }
 
   onResult(event) {
-    const result = event.results[this.currentResultIndex][0].transcript.toLowerCase()
+    const curResult = event.results[this.currentResultIndex]
+    const result = curResult[0].transcript.toLowerCase()
     const newTotalHits = this.newTotalHitsCounts(result)
     const currentHits = {}
 
@@ -89,13 +91,29 @@ export default class VoiceListener {
 
     this.diagnosticPara.textContent = 'Получена речь: ' + this.fullSpeech + ' ' + result
 
-    if (event.results[this.currentResultIndex].isFinal) {
+    if (curResult.isFinal) {
       this.currentResultIndex +=1
       this.setCurrentResultHitsCountsToDefault()
       this.fullSpeech = this.fullSpeech + ' ' + result
+
+      this.onSpeechEnd(currentHits)
+    } else if (Object.keys(currentHits).length !== 0) {
+      this.onSpeechEnd(currentHits)
     }
 
+    // if (!this.speechStarted) this.onSpeechStart(currentHits)
+
     this.settings.onResult(currentHits)
+  }
+
+  onSpeechStart(currentHits) {
+    this.speechStarted = true
+    this.settings.onSpeechStart(currentHits)
+  }
+
+  onSpeechEnd(currentHits) {
+    this.speechStarted = false
+    this.settings.onSpeechEnd(currentHits)
   }
 
   newTotalHitsCounts(result) {

@@ -4,6 +4,7 @@ export const APP_BORDER_TOP = 45
 export const APP_BORDER = 45
 
 export const CHEERING_R = 100
+export const CHEERING_INNER_R = CHEERING_R / 4
 export const CHEERING_TIME = 2 * 1000 // 2 seconds
 
 export const EMPLOYEE_R = APP_WIDTH / 70

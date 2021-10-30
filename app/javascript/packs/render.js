@@ -1,8 +1,14 @@
 import * as PIXI from 'pixi.js'
+import { ColorOverlayFilter } from '@pixi/filter-color-overlay'
+import { InteractionManager } from '@pixi/interaction'
 
 import Button from './lib/button'
 import { random } from './lib/helpers'
-import { APP_WIDTH, APP_HEIGHT, APP_BORDER, APP_BORDER_TOP, EMPLOYEE_R, EMPLOYEE_D, EMPLOYEES_COUNT, EMPLOYEE_ROLES } from './constants'
+import { APP_WIDTH, APP_HEIGHT, APP_BORDER, APP_BORDER_TOP, CHEERING_R, CHEERING_INNER_R, EMPLOYEE_R, EMPLOYEE_D, EMPLOYEES_COUNT, EMPLOYEE_ROLES } from './constants'
+
+PIXI.Renderer.registerPlugin('interaction', InteractionManager)
+
+const colorFilter = new ColorOverlayFilter(0x000020, 0.3)
 
 function renderGame(app, handleStartClick) {
 	renderStartButton(app, handleStartClick)
@@ -121,15 +127,47 @@ function renderResultText(app, text) {
 		wordWrapWidth: 560,
 		wordWrap: true,
 		breakWords: true,
-	});
+	})
 
-	textObj.x = APP_WIDTH / 2
-	textObj.y = APP_HEIGHT / 3
-	textObj.anchor.x = 0.5
+	obj.x = APP_WIDTH / 2
+	obj.y = APP_HEIGHT / 3
+	obj.anchor.x = 0.5
 
-	app.stage.addChild(textObj)
+	app.stage.addChild(obj)
 
-	return textObj
+	return obj
+}
+
+function renderCheeringCircle(app, player, r, color) {
+	let container = new PIXI.Container()
+
+	let obj = new PIXI.Graphics()
+	obj.beginFill(color, 0.5)
+	obj.drawCircle(r, r, r)
+	obj.endFill()
+	obj.filters = [colorFilter]
+
+	container.addChild(obj)
+	setPlayerPosition(player, obj, r)
+
+	container.scale.set(0.1)
+	app.stage.addChild(container)
+
+	return obj
+}
+
+function scaleCircle(circle, step) {
+	const container = circle.parent
+	container.scale.set(container.scale.x + step)
+}
+
+function setPlayerPosition(player, circle, r) {
+	const container = circle.parent
+	circle.x = -1*r
+	circle.y = -1*r
+
+	container.x = player.x + player.width / 2
+	container.y = player.y + player.width / 2
 }
 
 function randomEmployeeRole() {
@@ -162,4 +200,4 @@ function employeePositionByIndex(i) {
 	return {x, y}
 }
 
-export { renderGame, renderScore, renderTimer, renderStartButton, renderRestartButton, renderPlayer, renderEmployees, renderResultText, renderCheeringCircle }
+export { renderGame, renderScore, renderTimer, renderStartButton, renderRestartButton, renderPlayer, renderEmployees, renderResultText, renderCheeringCircle, setPlayerPosition, scaleCircle }
