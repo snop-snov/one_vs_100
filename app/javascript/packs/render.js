@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 
-import Button from './lib/button';
+import Button from './lib/button'
 import { random } from './lib/helpers'
 import { APP_WIDTH, APP_HEIGHT, APP_BORDER, APP_BORDER_TOP, EMPLOYEE_R, EMPLOYEE_D, EMPLOYEES_COUNT, EMPLOYEE_ROLES } from './constants'
 
@@ -13,7 +13,7 @@ function renderScore(container, score) {
 }
 
 function renderTimer(container, time) {
-	container.innerHTML = Math.round(time);
+	container.innerHTML = Math.round(time)
 }
 
 function renderStartButton(app, onClick) {
@@ -45,28 +45,28 @@ function renderRestartButton(app, onClick) {
 }
 
 function renderPlayer(app) {
-	const w = APP_WIDTH / 40;
-	const h = APP_HEIGHT / 40;
-	const x = 0;
-	const y = 0;
+	const w = APP_WIDTH / 40
+	const h = APP_HEIGHT / 40
+	const x = 0
+	const y = 0
 
-	let obj = new PIXI.Graphics();
-	obj.beginFill(0xF44336);
-	obj.drawRect(x, y, w, h);
-	obj.endFill();
+	let obj = new PIXI.Graphics()
+	obj.beginFill(0xF44336)
+	obj.drawRect(x, y, w, h)
+	obj.endFill()
 	obj.position.x = APP_BORDER
 	obj.position.y = APP_BORDER_TOP
 
-	app.stage.addChild(obj);
+	app.stage.addChild(obj)
 
-	return obj;
+	return obj
 }
 
 function renderEmployees(app, cheeringText) {
-	const r = EMPLOYEE_R;
+	const r = EMPLOYEE_R
 
-	let roles = [];
-	let employees = [];
+	let roles = []
+	let employees = []
 
 	for(var i = 0; i < EMPLOYEES_COUNT; i++){
 		const e = randomEmployeeRole()
@@ -82,16 +82,16 @@ function renderEmployees(app, cheeringText) {
 }
 
 function renderEmployee(role, cheeringText, app, i) {
-	const r = EMPLOYEE_R;
+	const r = EMPLOYEE_R
 
-	let obj = new PIXI.Graphics();
-	obj.beginFill(role.color);
+	let obj = new PIXI.Graphics()
+	obj.beginFill(role.color)
 	obj.position.x = random(APP_BORDER, APP_WIDTH - EMPLOYEE_D - APP_BORDER)
 	obj.position.y = random(APP_BORDER_TOP, APP_HEIGHT - EMPLOYEE_D - APP_BORDER)
-	obj.drawCircle(r, r, r);
-	obj.endFill();
+	obj.drawCircle(r, r, r)
+	obj.endFill()
 
-	app.stage.addChild(obj);
+	app.stage.addChild(obj)
 
 	const cheering = cheeringText(role.type)
 	const x = random(100, 450)
@@ -108,11 +108,11 @@ function renderEmployee(role, cheeringText, app, i) {
 		i,
 	}
 
-	return employee;
+	return employee
 }
 
 function renderResultText(app, text) {
-	const textObj = new PIXI.Text(text, {
+	const obj = new PIXI.Text(text, {
 		fill: "white",
 		fontSize: 40,
 		fontWeight: 'bold',
@@ -162,4 +162,4 @@ function employeePositionByIndex(i) {
 	return {x, y}
 }
 
-export { renderGame, renderScore, renderTimer, renderStartButton, renderRestartButton, renderPlayer, renderEmployees, renderResultText };
+export { renderGame, renderScore, renderTimer, renderStartButton, renderRestartButton, renderPlayer, renderEmployees, renderResultText, renderCheeringCircle }

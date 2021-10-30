@@ -1,20 +1,20 @@
 import * as PIXI from 'pixi.js'
-import { ColorOverlayFilter } from '@pixi/filter-color-overlay';
-import { InteractionManager } from '@pixi/interaction';
+import { ColorOverlayFilter } from '@pixi/filter-color-overlay'
+import { InteractionManager } from '@pixi/interaction'
 
-import FetchHelpers from './lib/FetchHelpers';
+import FetchHelpers from './lib/FetchHelpers'
 import { between } from './lib/helpers'
 
-import VoiceListener from './voice';
+import VoiceListener from './voice'
 import { GAME_TIME, APP_WIDTH, APP_HEIGHT, APP_BORDER, APP_BORDER_TOP, CHEERING_R, EMPLOYEE_D, EMPLOYEES_COUNT, EMPLOYEE_ROLES } from './constants'
-import { renderGame, renderScore, renderTimer, renderStartButton, renderRestartButton, renderEmployees, renderPlayer, renderResultText } from './render'
+import { renderGame, renderScore, renderTimer, renderStartButton, renderRestartButton, renderEmployees, renderPlayer, renderResultText, renderCheeringCircle } from './render'
 
 PIXI.Renderer.registerPlugin('interaction', InteractionManager)
 
 const colorFilter = new ColorOverlayFilter(0x000020, 0.6)
 
 const handleOnLoad = function() {
-	let app = new PIXI.Application({ width: APP_WIDTH, height: APP_HEIGHT });
+	let app = new PIXI.Application({ width: APP_WIDTH, height: APP_HEIGHT })
 
 	createGameContainer(app)
 
@@ -23,10 +23,10 @@ const handleOnLoad = function() {
 	})
 }
 
-const createGameContainer = function(app) {
-	const element = document.getElementById("gameContainer");
-	if (!element) return;
-	element.appendChild(app.view);
+function createGameContainer(app) {
+	const element = document.getElementById("gameContainer")
+	if (!element) return
+	element.appendChild(app.view)
 }
 
 function handleStartGame(app, userCheerings) {
@@ -34,13 +34,13 @@ function handleStartGame(app, userCheerings) {
 	startGame(app, userCheerings)
 }
 
-const clearGame = function(app) {
+function clearGame(app) {
 	const stage = app.stage
-	while(stage.children[0]) { stage.removeChild(stage.children[0]); }
+	while(stage.children[0]) { stage.removeChild(stage.children[0]) }
 }
 
 function startGame(app, userCheerings) {
-	let elapsed = 0.0; // Time since start
+	let elapsed = 0.0 // Time since start
 
 	let lazyEmployeesCount = EMPLOYEES_COUNT
 	let timeLeft = GAME_TIME
@@ -59,14 +59,14 @@ function startGame(app, userCheerings) {
 	let employees = renderEmployees(app, (r) => cheeringTextByRole(r))
 	let player = renderPlayer(app)
 
-	document.addEventListener('keydown', (k) => moveOnKeyPress(player, employees, k));
+	document.addEventListener('keydown', (k) => moveOnKeyPress(player, employees, k))
 
 	app.ticker.add((delta) => {
-		elapsed += delta;
+		elapsed += delta
 
 		if (isGameInProgress()) { employees.filter((e) => e.state === 'lazy').forEach(moveEmployee) }
 		employees.filter((e) => e.state === 'cheered').forEach(moveCheeredEmployee)
-	});
+	})
 
 	function showGameResult(app) {
 		lazyEmployeesCount > 0 ? renderResultText(app, "Потрачено\n😞") : renderResultText(app, "Это победа!\n🎉")
@@ -74,11 +74,11 @@ function startGame(app, userCheerings) {
 
 	function startTimer() {
 		const timer = setInterval(() => {
-			timeLeft -= 1;
+			timeLeft -= 1
 
 			stopGameIfNeeded(app, timer)
 			renderTimer(timerContainer, timeLeft)
-		}, 1000);
+		}, 1000)
 
 		return timer
 	}
@@ -110,8 +110,8 @@ function startGame(app, userCheerings) {
 		const maxX = APP_WIDTH / 2 - EMPLOYEE_D - 4 * APP_BORDER
 		const maxY = APP_HEIGHT / 2 - EMPLOYEE_D - APP_BORDER_TOP - APP_BORDER
 
-		e.obj.x = between(e.startPosition.x + Math.sin(elapsed/e.magicNumbers.x) * maxX, APP_BORDER, APP_WIDTH - EMPLOYEE_D - APP_BORDER);
-		e.obj.y = between(e.startPosition.y + Math.cos(elapsed/e.magicNumbers.y) * maxY, APP_BORDER_TOP, APP_HEIGHT - EMPLOYEE_D - APP_BORDER);
+		e.obj.x = between(e.startPosition.x + Math.sin(elapsed/e.magicNumbers.x) * maxX, APP_BORDER, APP_WIDTH - EMPLOYEE_D - APP_BORDER)
+		e.obj.y = between(e.startPosition.y + Math.cos(elapsed/e.magicNumbers.y) * maxY, APP_BORDER_TOP, APP_HEIGHT - EMPLOYEE_D - APP_BORDER)
 	}
 
 	function moveCheeredEmployee(e) {
@@ -194,8 +194,8 @@ function startGame(app, userCheerings) {
 		const y = player.position.y
 		let r = CHEERING_R
 
-		const dist_points = (a - x) * (a - x) + (b - y) * (b - y);
-		r *= r;
+		const dist_points = (a - x) * (a - x) + (b - y) * (b - y)
+		r *= r
 
 		return dist_points < r
 	}
@@ -226,4 +226,4 @@ function getCheerings() {
 	return FetchHelpers.get(url)
 }
 
-document.addEventListener("turbolinks:load", handleOnLoad);
+document.addEventListener("turbolinks:load", handleOnLoad)
