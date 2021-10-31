@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   scope module: :web do
     resource :session, only: %i[destroy]
     resource :game, only: %i[show]
-    resource :user, only: %i[] do
+    resource :user, only: %i[new create] do
       scope module: :users do
         resources :cheerings, only: %i[new create]
       end

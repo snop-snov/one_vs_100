@@ -1,0 +1,9 @@
+= form_with model: user, url: url do |form|
+  - if user.errors.present?
+    .card-panel.red
+      = user.errors.first.message
+
+  = form.text_field :name, placeholder: 'Введи имя', class: 'materialize-text cheering-input', autofocus: true, style: { width: '30%' }
+  %br
+  %br
+  = form.submit 'Запомнить', class: 'btn waves-effect waves-light btn-save'
