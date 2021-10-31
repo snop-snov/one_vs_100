@@ -7,44 +7,50 @@
   .container
     .row
       .column.col.s5.push-s7
-        %h5.center Личные рекорды
+        %h5.center Tвои рекорды
       .column.col.s7.pull-s5
         %h5.center Мировые рекорды
     .row
       .column.col.s5.push-s7
-        %table
-          %tbody
-            %tr{style: "border-bottom-color: gray"}
-              %td
-                %b Слова:
-              %td
-                %b Время игры:
-              %td
-            - @user_wins.each do |win|
-              %tr{style: "border-bottom-color: gray"}
-                %td
-                  - win.cheerings.each do |c|
-                    %div{style: "color: #{c.color}"}
-                      = c.text
-                %td= win.time
-
+        - if current_user.present?
+          - if @user_wins.present?
+            %table
+              %tbody
+                %tr{style: "border-bottom-color: gray"}
+                  %td
+                    %b Слова:
+                  %td
+                    %b Время игры:
+                  %td
+                - @user_wins.each do |win|
+                  %tr{style: "border-bottom-color: gray"}
+                    %td
+                      - win.cheerings.each do |c|
+                        %div{style: "color: #{c.color}"}
+                          = c.text
+                    %td= win.time
+        - if current_user.blank? || @user_wins.blank?
+          = render partial: 'empty'
 
       .column.col.s7.pull-s5
-        %table
-          %tbody
-            %tr{style: "border-bottom-color: gray"}
-              %td
-                %b Имя:
-              %td
-                %b Слова:
-              %td
-                %b Время игры:
-              %td
-            - @all_wins.each do |win|
+        - if @all_wins.present?
+          %table
+            %tbody
               %tr{style: "border-bottom-color: gray"}
-                %td= win.user.name
                 %td
-                  - win.cheerings.each do |c|
-                    %div{style: "color: #{c.color}"}
-                      = c.text
-                %td= win.time
+                  %b Имя:
+                %td
+                  %b Слова:
+                %td
+                  %b Время игры:
+                %td
+              - @all_wins.each do |win|
+                %tr{style: "border-bottom-color: gray"}
+                  %td= win.user.name
+                  %td
+                    - win.cheerings.each do |c|
+                      %div{style: "color: #{c.color}"}
+                        = c.text
+                  %td= win.time
+        - else
+          = render partial: 'empty'

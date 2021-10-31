@@ -1,5 +1,5 @@
 class Web::WinsController < Web::ApplicationController
-  skip_before_action :authenticate_user!, only: %i[show]
+  skip_before_action :authenticate_user!, only: %i[index]
 
   def index
     all_wins_scope = User::Win.order(cheering_length: :desc, time: :asc)

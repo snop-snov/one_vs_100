@@ -38,6 +38,13 @@
  text-decoration-color: #D50000;
 }
 
+.game-link {
+ text-decoration: none;
+}
+.game-link:hover {
+ text-decoration: underline;
+}
+
 body {
   background-color: black;
   color: white;
