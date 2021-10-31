@@ -42,3 +42,8 @@ docker-compose up web
 docker-compose up frontend
 
 ```
+## other
+```
+docker-compose up run --rm web bash
+eval `ssh-agent -s` && ssh-add ~/.ssh/id_rsa
+```
