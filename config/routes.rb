@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     resource :user, only: %i[] do
       scope module: :users do
         resources :cheerings, only: %i[index]
+        resources :wins, only: %i[index create]
       end
     end
   end

@@ -19,9 +19,13 @@ class Web::Users::CheeringsController < Web::Users::ApplicationController
   def create
     create_params = params.required(:user_cheering).permit(:employee_role, :text)
     cheering = current_user.cheerings.find_or_initialize_by(employee_role: create_params[:employee_role])
+
     cheering.assign_attributes(create_params)
 
     if cheering.save
+      cheering_length = current_user.cheerings.pluck(:text).sum(&:length)
+      current_user.update(cheering_length: cheering_length)
+
       redirect_to new_user_cheering_path
     else
       @new_cheering = cheering
