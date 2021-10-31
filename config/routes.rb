@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     resource :game, only: %i[show]
     resource :user, only: %i[] do
       scope module: :users do
-        resources :cheerings, only: %i[create]
+        resources :cheerings, only: %i[new create]
       end
     end
   end

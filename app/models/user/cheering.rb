@@ -14,5 +14,5 @@ class User::Cheering < ApplicationRecord
   belongs_to :user, dependent: :destroy
 
   validates :employee_role, presence: true, inclusion: { in: self.employee_role_types }
-  validates :text, presence: true
+  validates :text, presence: true, format: { with: /\A[a-zA-Z0-9А-Яа-я]+\z/, message: "only allows letters" }
 end

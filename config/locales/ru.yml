@@ -1,0 +1,12 @@
+en:
+  activerecord:
+    attributes:
+      user/cheering:
+        text: Слово
+    errors:
+      models:
+        user/cheering:
+          attributes:
+            text:
+              blank: не может быть пустым
+              invalid: текст

@@ -28,3 +28,17 @@ heroku stack:set container
 ```
 git push
 ```
+
+## first start
+```
+docker-compose build
+docker-compose run --rm web bash
+rails db:create db:migrate
+exit
+```
+## start
+```
+docker-compose up web
+docker-compose up frontend
+
+```
