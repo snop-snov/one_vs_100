@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!
+  before_action :allow_iframe_requests
 
   helper_method :current_user
 
@@ -10,5 +11,9 @@ class ApplicationController < ActionController::Base
 
   def current_user
     User.find(session[:user_id]) if session[:user_id].present?
+  end
+
+  def allow_iframe_requests
+    response.headers.delete('X-Frame-Options')
   end
 end
