@@ -57,11 +57,11 @@ export default class VoiceListener {
     let errorText
     switch(event.error) {
       case 'not-allowed':
-        errorText = 'Пожалуйста разрешите доступ к микрофону'
+        errorText = 'Пожалуйста разреши доступ к микрофону'
         break
 
       case 'no-speech':
-        errorText = 'Пожалуйста говорите после нажатия на кнопку'
+        errorText = 'Пожалуйста говори после нажатия на кнопку'
         break
 
       default:

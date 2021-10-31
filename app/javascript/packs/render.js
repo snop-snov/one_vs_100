@@ -11,6 +11,7 @@ PIXI.Renderer.registerPlugin('interaction', InteractionManager)
 const colorFilter = new ColorOverlayFilter(0x000020, 0.3)
 
 function renderGame(app, handleStartClick) {
+	renderStartText(app, "Теперь тебе нужно ГОВОРИТЬ подбадривающие слова.\n\nУправление: голос, стрелочки")
 	renderStartButton(app, handleStartClick)
 }
 
@@ -115,6 +116,27 @@ function renderEmployee(role, cheeringText, app, i) {
 	}
 
 	return employee
+}
+
+function renderStartText(app, text) {
+	const obj = new PIXI.Text(text, {
+		fill: "white",
+		fontSize: 30,
+		fontWeight: 'bold',
+		align: "center",
+		width: app.screen.width,
+		wordWrapWidth: 560,
+		wordWrap: true,
+		breakWords: true,
+	})
+
+	obj.x = APP_WIDTH / 2
+	obj.y = APP_HEIGHT / 7
+	obj.anchor.x = 0.5
+
+	app.stage.addChild(obj)
+
+	return obj
 }
 
 function renderResultText(app, text) {

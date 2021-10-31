@@ -7,7 +7,7 @@ import { between } from './lib/helpers'
 
 import VoiceListener from './voice'
 import { GAME_TIME, APP_WIDTH, APP_HEIGHT, APP_BORDER, APP_BORDER_TOP, CHEERING_R, CHEERING_INNER_R, EMPLOYEE_D, EMPLOYEES_COUNT, EMPLOYEE_ROLES } from './constants'
-import { renderGame, renderScore, renderTimer, renderStartButton, renderRestartButton, renderEmployees, renderPlayer, renderResultText, renderCheeringCircle, setPlayerPosition, scaleCircle } from './render'
+import { renderGame, renderScore, renderTimer, renderRestartButton, renderEmployees, renderPlayer, renderResultText, renderCheeringCircle, setPlayerPosition, scaleCircle } from './render'
 
 PIXI.Renderer.registerPlugin('interaction', InteractionManager)
 

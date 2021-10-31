@@ -3,6 +3,10 @@
   cursor: pointer;
 }
 
+.btn {
+  background-color: #38adff;
+}
+
 .row {
   display: flex;
 }
@@ -12,4 +16,10 @@
 
 .cheering-input {
   width: 30% !important;
+  color: white;
+}
+
+body {
+  background-color: black;
+  color: white;
 }

@@ -2,7 +2,8 @@
 %html
   %head
     %title OneVs100
-    %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
+    %meta{content: "width=device-width,initial-scale=1", name: "viewport"}
+    %meta{name: "theme-color", media: "(prefers-color-scheme: dark)", content: "black"}
     = csrf_meta_tags
     = csp_meta_tag
     = stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'

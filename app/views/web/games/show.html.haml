@@ -21,7 +21,7 @@
             = render partial: "web/games/cheerings/#{role[:type]}", locals: { color: role[:color], text: text }
           .container
             %br
-            = button_to "Обновить тексты", session_path, method: :delete, class: "btn waves-effect waves-light"
+            = button_to "Обновить слова", session_path, method: :delete, class: "btn waves-effect waves-light"
         %br
         %br
         .container
