@@ -21,6 +21,7 @@ class Web::Users::CheeringsController < Web::Users::ApplicationController
     cheering = current_user.cheerings.find_or_initialize_by(employee_role: create_params[:employee_role])
 
     cheering.assign_attributes(create_params)
+    cheering.text.strip!
 
     if cheering.save
       redirect_to new_user_cheering_path

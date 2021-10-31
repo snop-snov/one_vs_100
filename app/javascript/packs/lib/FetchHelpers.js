@@ -5,6 +5,7 @@ function headers() {
     'Accept': '*/*',
     'content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
+    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
   };
 }
 

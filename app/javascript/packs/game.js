@@ -65,13 +65,17 @@ function startGame(app, userCheerings) {
 
 	document.addEventListener('keydown', (k) => moveOnKeyPress(player, employees, k))
 
-	app.ticker.add((delta) => {
+	const ticker = app.ticker.add((delta) => {
 		elapsed += delta
 
 		if (isGameInProgress()) { employees.filter((e) => e.state === 'lazy').forEach(moveEmployee) }
 		employees.filter((e) => e.state === 'cheered').forEach(moveCheeredEmployee)
 
 		scaleCircles(circles)
+
+		if (!isGameInProgress) {
+			ticker.remove()
+		}
 	})
 
 	function showGameResult(app) {
