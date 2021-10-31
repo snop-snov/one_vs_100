@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   scope module: :web do
     resource :session, only: %i[destroy]
+    resource :scores, only: %i[show]
     resource :game, only: %i[show]
     resource :user, only: %i[new create] do
       scope module: :users do
