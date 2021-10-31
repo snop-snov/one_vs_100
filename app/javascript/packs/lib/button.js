@@ -17,7 +17,7 @@ export default class Button extends NineSlicePlane {
             fontSize: 35,
             label: 'Button',
             stroke: '#336699',
-            strokeThickness: 4,
+            strokeThickness: 3,
             tint: 0xFFFFFF,
 
             overTint: 0xDDDDDD,

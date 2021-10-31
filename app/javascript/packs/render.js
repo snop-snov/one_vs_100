@@ -160,6 +160,38 @@ function renderResultText(app, text) {
 	return obj
 }
 
+function renderWinsLinkText(app) {
+	const obj = new PIXI.Text("Проверь страницу победителей     👉", {
+		fill: 'white',
+		fontWeight: 'bold',
+		align: "center",
+		width: app.screen.width,
+		wordWrapWidth: 560,
+		wordWrap: true,
+		breakWords: true,
+	})
+
+	obj.x = APP_WIDTH / 2
+	obj.y = APP_HEIGHT / 1.3
+	obj.anchor.x = 0.5
+
+	const arrow = new PIXI.Graphics()
+	arrow.lineStyle(3, 0xffffff);
+	arrow.moveTo(280, -6);
+	arrow.lineTo(300, -10);
+	arrow.lineTo(286, 4);
+
+	arrow.moveTo(300, -10);
+	arrow.lineTo(270, 6);
+
+	arrow.endFill();
+
+	obj.addChild(arrow)
+	app.stage.addChild(obj)
+
+	return obj
+}
+
 function renderCheeringCircle(app, player, r, color) {
 	let container = new PIXI.Container()
 
@@ -222,4 +254,4 @@ function employeePositionByIndex(i) {
 	return {x, y}
 }
 
-export { renderGame, renderScore, renderTimer, renderStartButton, renderRestartButton, renderPlayer, renderEmployees, renderResultText, renderCheeringCircle, setPlayerPosition, scaleCircle }
+export { renderGame, renderScore, renderTimer, renderStartButton, renderRestartButton, renderPlayer, renderEmployees, renderResultText, renderWinsLinkText, renderCheeringCircle, setPlayerPosition, scaleCircle }
