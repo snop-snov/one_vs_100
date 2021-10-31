@@ -17,4 +17,9 @@ class User::Cheering < ApplicationRecord
 
   validates :employee_role, presence: true, inclusion: { in: self.employee_role_types }
   validates :text, presence: true, format: { with: /\A[a-zA-Z0-9А-Яа-яё]+\z/ }
+
+  def color
+    role = EMPLOYEE_ROLES.find { |r| r[:type] == employee_role }
+    role[:color] if role.present?
+  end
 end

@@ -1,18 +1,18 @@
 #index-banner.section.no-pad-bot
   .container
     .row
-      .column
+      .column#gameColumn
         %h3.header.center{style: "width: 600px"}
           #gameScoreCounter
             1 vs 100
-      .column
+      .column#gameColumn
         %h3.header.center
           #gameTimer
   .container
     .row
-      .column
+      .column#gameColumn
         #gameContainer
-      .column
+      .column#gameColumn
         .container
           - User::Cheering::EMPLOYEE_ROLES.each do |role|
             - cheering = current_user.cheerings.find_by(employee_role: role[:type])
