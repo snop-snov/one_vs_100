@@ -1,4 +1,4 @@
-en:
+ru:
   activerecord:
     attributes:
       user/cheering:
@@ -8,5 +8,5 @@ en:
         user/cheering:
           attributes:
             text:
-              blank: не может быть пустым
-              invalid: текст
+              blank: Чтобы продолжить, введи слово в поле
+              invalid: Чтобы продолжить, введи одно слово без пробелов и спецсимволов

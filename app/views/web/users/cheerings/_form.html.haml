@@ -1,7 +1,7 @@
 = form_with model: user_cheering, url: url do |form|
   - if user_cheering.errors.present?
     .card-panel.red
-      = user_cheering.errors.first.full_message
+      = user_cheering.errors.first.message
 
   = form.hidden_field :employee_role, value: user_cheering.employee_role
   = form.text_field :text, placeholder: 'Введи подбадривающее слово', class: 'materialize-text cheering-input', autofocus: true, style: { width: '30%' }

@@ -1,1 +1,1 @@
-I18n.config.available_locales = :ru
+I18n.config.available_locales = %i[ru en]
