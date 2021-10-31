@@ -44,6 +44,15 @@ docker-compose up frontend
 ```
 ## other
 ```
-docker-compose up run --rm web bash
+docker-compose run --rm web bash
+docker-compose run --rm  --service-ports web bash
+bin/rails s -b '0.0.0.0' -p 3000
+
 eval `ssh-agent -s` && ssh-add ~/.ssh/id_rsa
+```
+## ошибка на винде с \r
+```
+docker-compose run --rm web bash
+apt install dos2unix
+find . -type f -print0 | xargs -0 dos2unix
 ```
