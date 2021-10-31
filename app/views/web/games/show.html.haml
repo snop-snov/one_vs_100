@@ -21,11 +21,11 @@
             = render partial: "web/games/cheerings/#{role[:type]}", locals: { color: role[:color], text: text }
           .container
             %br
-            = button_to "Обновить слова", session_path, method: :delete, class: "btn waves-effect waves-light"
+            = button_to "Обновить слова", session_path, method: :delete, class: "btn waves-effect waves-light btn-update"
         %br
         %br
         .container
-          #voiceContainer
-            %div
-              %p.output
-                = "...отладочная информация"
+          %div#voiceContainer
+            %i.material-icons#vioceIcon
+              mic_none
+            Отладочная информация

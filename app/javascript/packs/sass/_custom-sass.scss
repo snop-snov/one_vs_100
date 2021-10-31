@@ -3,8 +3,12 @@
   cursor: pointer;
 }
 
-.btn {
+.btn-save {
   background-color: #38adff;
+}
+
+.btn-update {
+  background-color: gray;
 }
 
 .row {
@@ -17,6 +21,12 @@
 .cheering-input {
   width: 30% !important;
   color: white;
+}
+
+#vioceIcon {
+  position: relative;
+  top: 7px;
+  margin-right: 10px;
 }
 
 body {

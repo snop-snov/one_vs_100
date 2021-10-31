@@ -25,18 +25,18 @@ export default class VoiceListener {
     this.recognition.interimResults = true;
     this.recognition.maxAlternatives = 1;
 
-    this.diagnosticPara = document.querySelector('.output');
+    this.diagnosticPara = document.getElementById('voiceContainer');
 
     this.recognition.onresult = this.onResult.bind(this)
     this.recognition.onerror = this.onError.bind(this)
     this.recognition.onsoundstart = () => console.log('START')
     this.recognition.onsoundend = () => console.log('END')
+    this.recognition.onend = this.onEnd.bind(this)
 
     // this.recognition.onTap = this.settings.onTap.bind(this)
     // this.recognition.onspeechend = this.onSpeechEnd.bind(this)
     // this.recognition.onaudiostart = this.settings.onaudiostart.bind(this)
     // this.recognition.onaudioend = this.settings.onaudioend.bind(this)
-    // this.recognition.onend = this.settings.onend.bind(this)
     // this.recognition.onnomatch = this.settings.onnomatch.bind(this)
     // this.recognition.onsoundstart = this.settings.onsoundstart.bind(this)
     // this.recognition.onsoundend = this.settings.onsoundend.bind(this)
@@ -46,11 +46,15 @@ export default class VoiceListener {
 
   startListen() {
     this.recognition.start();
+    this.diagnosticPara.innerHTML = '<i class="material-icons" id="vioceIcon">mic_none</i>' + 'Начинай говорить'
   }
 
   stopListen() {
     this.recognition.stop();
-    this.diagnosticPara.textContent = 'Распознавание речи отключено!'
+  }
+
+  onEnd() {
+    this.diagnosticPara.innerHTML = '<i class="material-icons" id="vioceIcon">mic_off</i>' + 'Распознавание отключено'
   }
 
   onError(event) {
@@ -68,7 +72,7 @@ export default class VoiceListener {
         errorText = event.error
     }
 
-    this.diagnosticPara.textContent = 'Ошибка: ' + errorText;
+    this.diagnosticPara.textContent = '<i class="material-icons" id="vioceIcon">mic_off</i>' + 'Ошибка: ' + errorText;
 
     this.settings.onError(errorText)
   }
@@ -89,7 +93,8 @@ export default class VoiceListener {
       }
     })
 
-    this.diagnosticPara.textContent = 'Получена речь: ' + this.fullSpeech + ' ' + result
+    // this.diagnosticPara.textContent = 'Получена речь: ' + this.fullSpeech + ' ' + result
+    this.diagnosticPara.innerHTML = '<i class="material-icons" id="vioceIcon">mic</i>' + result
 
     if (curResult.isFinal) {
       this.currentResultIndex +=1

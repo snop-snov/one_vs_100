@@ -175,7 +175,7 @@ function startGame(app, userCheerings) {
 		const cheeringTexts = Object.keys(hits)
 
 		if (cheeringTexts.length > 0) {
-			const index = userCheerings.findIndex((c) => c.text === cheeringTexts[0])
+			const index = userCheerings.findIndex((c) => c.text.toLowerCase() === cheeringTexts[0].toLowerCase())
 			const c = renderCheeringCircle(app, player, CHEERING_R, EMPLOYEE_ROLES[index].color)
 			circles.push(c)
 		} else {
@@ -184,7 +184,7 @@ function startGame(app, userCheerings) {
 		}
 
 		cheeringTexts.forEach((text) => {
-			const index = userCheerings.findIndex((c) => c.text === text )
+			const index = userCheerings.findIndex((c) => c.text.toLowerCase() === text.toLowerCase() )
 			const count = hits[text]
 
 			for(var i = 0; i < count; i++){

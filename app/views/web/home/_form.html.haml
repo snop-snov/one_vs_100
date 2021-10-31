@@ -4,7 +4,7 @@
       = user_cheering.errors.full_messages.join(' ,')
 
   = form.hidden_field :employee_role, value: user_cheering.employee_role
-  = form.text_field :text, required: true, placeholder: 'Твоё подбадривающее слово', class: 'materialize-text cheering-input', autofocus: true, style: { width: '30%' }
+  = form.text_field :text, required: true, placeholder: 'Введи подбадривающее слово', class: 'materialize-text cheering-input', autofocus: true, style: { width: '30%' }
   %br
   %br
-  = form.submit 'Запомнить', class: 'btn waves-effect waves-light'
+  = form.submit 'Запомнить', class: 'btn waves-effect waves-light btn-save'
