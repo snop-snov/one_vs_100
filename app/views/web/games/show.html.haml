@@ -19,10 +19,13 @@
             - text = cheering.present? ? cheering.text : role[:type]
 
             = render partial: "web/games/cheerings/#{role[:type]}", locals: { color: role[:color], text: text }
-          .container
-            %br
+
+          %br
+          .center
             = button_to "Обновить слова", session_path, method: :delete, class: "btn waves-effect waves-light btn-update"
         %br
+        .center
+          = link_to "🎉 Страница победителей 🎉", wins_path, target: "_blank"
         %br
         .container
           %div#voiceContainer
