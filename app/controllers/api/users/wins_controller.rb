@@ -1,6 +1,4 @@
 class Api::Users::WinsController < Api::Users::ApplicationController
-  skip_before_action :verify_authenticity_token, only: %i[create]
-
   def index
     wins = current_user.wins
     data = wins.select(:id, :time, :cheering_length).as_json
