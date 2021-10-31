@@ -12,7 +12,7 @@ export const EMPLOYEE_D = 2 * EMPLOYEE_R
 
 export const GAME_TIME = 60 // seconds
 
-export const EMPLOYEES_COUNT = 1
+export const EMPLOYEES_COUNT = 100
 export const EMPLOYEE_ROLES = [
 	{'type': 'developer', 'color': 0xffeb3b}, // yellow
 	{'type': 'devops', 'color': 0x24c875}, // green
