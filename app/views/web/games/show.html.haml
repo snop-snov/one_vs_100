@@ -25,7 +25,9 @@
             = button_to "Обновить слова", session_path, method: :delete, class: "btn waves-effect waves-light btn-update"
         %br
         .center
-          = link_to "🎉 Страница победителей 🎉", wins_path, target: "_blank"
+          = link_to wins_path, target: "_blank", class: "wins-link" do
+            %h6.center{style: "color: #D50000"}
+              🎉 Страница победителей 🎉
         %br
         .container
           %div#voiceContainer

@@ -30,6 +30,14 @@
   margin-right: 10px;
 }
 
+.wins-link {
+ text-decoration: none;
+}
+.wins-link:hover {
+ text-decoration: underline;
+ text-decoration-color: #D50000;
+}
+
 body {
   background-color: black;
   color: white;
