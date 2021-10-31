@@ -23,9 +23,6 @@ class Web::Users::CheeringsController < Web::Users::ApplicationController
     cheering.assign_attributes(create_params)
 
     if cheering.save
-      cheering_length = current_user.cheerings.pluck(:text).sum(&:length)
-      current_user.update(cheering_length: cheering_length)
-
       redirect_to new_user_cheering_path
     else
       @new_cheering = cheering

@@ -1,4 +1,6 @@
 class Api::Users::WinsController < Api::Users::ApplicationController
+  skip_before_action :verify_authenticity_token, only: %i[create]
+
   def index
     wins = current_user.wins
     data = wins.select(:id, :time, :cheering_length).as_json
@@ -12,10 +14,10 @@ class Api::Users::WinsController < Api::Users::ApplicationController
     create_params[:cheering_length] = current_user.cheerings.pluck(:text).sum(&:length)
 
     win = current_user.wins.build(create_params)
-    win.cheerings = current_user.cheerings
 
     if win.save
-      head :ok
+      win.cheerings = current_user.cheerings
+      render json: {status: :created}.as_json, status: :created
     else
       render json: {errors: win.errors}.as_json
     end

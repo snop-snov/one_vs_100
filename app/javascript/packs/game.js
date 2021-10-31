@@ -75,7 +75,12 @@ function startGame(app, userCheerings) {
 	})
 
 	function showGameResult(app) {
-		lazyEmployeesCount > 0 ? renderResultText(app, "Потрачено\n😞") : renderResultText(app, "Это победа!\n🎉")
+		if (lazyEmployeesCount > 0) {
+			renderResultText(app, "Потрачено\n😞")
+		} else {
+			renderResultText(app, "Это победа!\n🎉")
+			postWin({user_win: {time: GAME_TIME - timeLeft}})
+		}
 	}
 
 	function startTimer() {
@@ -268,6 +273,11 @@ function startGame(app, userCheerings) {
 function getCheerings() {
 	const url = "api/user/cheerings"
 	return FetchHelpers.get(url)
+}
+
+function postWin(params) {
+	const url = "api/user/wins"
+	return FetchHelpers.post(url, params)
 }
 
 document.addEventListener("turbolinks:load", handleOnLoad)
