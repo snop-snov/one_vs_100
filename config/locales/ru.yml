@@ -10,3 +10,17 @@ ru:
             text:
               blank: Чтобы продолжить, введи слово в поле
               invalid: Чтобы продолжить, введи одно слово без пробелов и спецсимволов
+
+  web:
+    wins:
+      index:
+        seconds_0: "%{count} секунд"
+        seconds_1: "%{count} секунда"
+        seconds_2: "%{count} секунды"
+        seconds_3: "%{count} секунды"
+        seconds_4: "%{count} секунды"
+        seconds_5: "%{count} секунд"
+        seconds_6: "%{count} секунд"
+        seconds_7: "%{count} секунд"
+        seconds_8: "%{count} секунд"
+        seconds_9: "%{count} секунд"

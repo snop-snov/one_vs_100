@@ -28,7 +28,7 @@
                       - win.cheerings.each do |c|
                         %div{style: "color: #{c.color}"}
                           = c.text
-                    %td= win.time
+                    %td= t ".seconds_#{win.time % 10}", count: win.time
         - if current_user.blank? || @user_wins.blank?
           = render partial: 'empty'
 
@@ -51,6 +51,6 @@
                     - win.cheerings.each do |c|
                       %div{style: "color: #{c.color}"}
                         = c.text
-                  %td= win.time
+                  %td= t ".seconds_#{win.time % 10}", count: win.time
         - else
           = render partial: 'empty'
