@@ -16,16 +16,18 @@ const colorFilter = new ColorOverlayFilter(0x000020, 0.6)
 const handleOnLoad = function() {
 	let app = new PIXI.Application({ width: APP_WIDTH, height: APP_HEIGHT })
 
-	createGameContainer(app)
+	const element = document.getElementById("gameContainer")
 
-	getCheerings().then(({userCheerings}) => {
-		renderGame(app, () => handleStartGame(app, userCheerings))
-	})
+	if (element) {
+		createGameContainer(app, element)
+
+		getCheerings().then(({userCheerings}) => {
+			renderGame(app, () => handleStartGame(app, userCheerings))
+		})
+	}
 }
 
-function createGameContainer(app) {
-	const element = document.getElementById("gameContainer")
-	if (!element) return
+function createGameContainer(app, element) {
 	element.appendChild(app.view)
 }
 
