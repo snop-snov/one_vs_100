@@ -152,7 +152,7 @@ function renderResultText(app, text) {
 	})
 
 	obj.x = APP_WIDTH / 2
-	obj.y = APP_HEIGHT / 3
+	obj.y = 0
 	obj.anchor.x = 0.5
 
 	app.stage.addChild(obj)

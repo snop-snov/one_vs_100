@@ -80,9 +80,9 @@ function startGame(app, userCheerings) {
 
 	function showGameResult(app) {
 		if (lazyEmployeesCount > 0) {
-			renderResultText(app, "Потрачено\n😞")
+			renderResultText(app, "😞\nПодобрать нужные слова\nв нужный момент —\nне просто.\n\nНо возможно!")
 		} else {
-			renderResultText(app, "Это победа!\n🎉")
+			renderResultText(app, "🎉\n\nЭто победа!\n\nТебе удалось почти невозможное!")
 			renderWinsLinkText(app)
 			postWin({user_win: {time: GAME_TIME - timeLeft}})
 		}
